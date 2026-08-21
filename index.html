@@ -38,9 +38,7 @@
     .container{width:min(1180px,calc(100% - 40px));margin:auto;position:relative;z-index:2}
 
     /* 3D Cyber Animated Background */
-    .cyber-bg{
-      position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;
-    }
+    .cyber-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
     .cyber-grid{
       position:absolute;inset:-50%;
       background-image:
@@ -54,10 +52,7 @@
       0%{transform:perspective(500px) rotateX(60deg) translateY(0)}
       100%{transform:perspective(500px) rotateX(60deg) translateY(60px)}
     }
-    .orb{
-      position:absolute;border-radius:50%;filter:blur(90px);opacity:0.35;
-      animation:floatOrb 10s ease-in-out infinite alternate;
-    }
+    .orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:0.35;animation:floatOrb 10s ease-in-out infinite alternate;}
     .orb-1{width:500px;height:500px;background:var(--teal);top:-100px;left:-100px;}
     .orb-2{width:550px;height:550px;background:var(--orange);top:25%;right:-150px;animation-duration:12s;opacity:0.25}
     .orb-3{width:600px;height:600px;background:var(--purple);bottom:10%;left:20%;animation-duration:14s;opacity:0.2}
@@ -66,26 +61,35 @@
       100%{transform:translate(40px,50px) scale(1.15)}
     }
 
-    /* Top Notice Bar */
+    /* Top Notice Bar & Scarcity Indicator */
     .notice{
       border-bottom:1px solid var(--line);
-      background:rgba(6,19,26,0.85);
+      background:rgba(6,19,26,0.92);
       backdrop-filter:blur(12px);
       padding:10px 14px;
       color:#ccfbf1;
       text-align:center;
       font-size:10.5px;
       font-weight:800;
-      letter-spacing:.14em;
+      letter-spacing:.12em;
       text-transform:uppercase;
       display:flex;
       align-items:center;
       justify-content:center;
-      gap:8px;
+      flex-wrap:wrap;
+      gap:14px;
       position:relative;z-index:30;
     }
+    .notice-item{display:inline-flex;align-items:center;gap:7px}
     .notice-dot{width:7px;height:7px;border-radius:50%;background:#10b981;box-shadow:0 0 10px #10b981;animation:pulseDot 1.6s infinite}
     @keyframes pulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.85)}}
+    
+    .scarcity-bar-wrap{
+      display:inline-flex;align-items:center;gap:8px;
+      background:rgba(0,0,0,0.5);padding:4px 10px;border-radius:20px;border:1px solid var(--line-bright);
+    }
+    .scarcity-track{width:65px;height:6px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden;}
+    .scarcity-fill{width:88%;height:100%;background:linear-gradient(90deg,var(--teal),var(--orange));border-radius:4px;box-shadow:0 0 8px var(--orange-glow)}
 
     /* Nav */
     .nav{position:sticky;top:0;z-index:40;background:rgba(3,7,10,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--line);transition:background .3s}
@@ -169,24 +173,12 @@
       display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;
       text-decoration:none;font-size:12px;font-weight:800;margin-bottom:8px;transition:.25s;
     }
-    .social-btn.discord{
-      background:rgba(88,101,242,0.15);border:1px solid rgba(88,101,242,0.4);color:#a5b4fc;
-    }
-    .social-btn.discord:hover{
-      background:var(--discord);color:#fff;box-shadow:0 0 20px rgba(88,101,242,0.6);transform:translateY(-2px);
-    }
-    .social-btn.telegram-sup{
-      background:rgba(34,158,217,0.15);border:1px solid rgba(34,158,217,0.4);color:#7dd3fc;
-    }
-    .social-btn.telegram-sup:hover{
-      background:var(--telegram);color:#fff;box-shadow:0 0 20px rgba(34,158,217,0.6);transform:translateY(-2px);
-    }
-    .social-btn.telegram-chan{
-      background:rgba(255,90,31,0.15);border:1px solid rgba(255,90,31,0.4);color:#fdba74;
-    }
-    .social-btn.telegram-chan:hover{
-      background:var(--orange);color:#180602;box-shadow:0 0 20px var(--orange-glow);transform:translateY(-2px);
-    }
+    .social-btn.discord{background:rgba(88,101,242,0.15);border:1px solid rgba(88,101,242,0.4);color:#a5b4fc;}
+    .social-btn.discord:hover{background:var(--discord);color:#fff;box-shadow:0 0 20px rgba(88,101,242,0.6);transform:translateY(-2px);}
+    .social-btn.telegram-sup{background:rgba(34,158,217,0.15);border:1px solid rgba(34,158,217,0.4);color:#7dd3fc;}
+    .social-btn.telegram-sup:hover{background:var(--telegram);color:#fff;box-shadow:0 0 20px rgba(34,158,217,0.6);transform:translateY(-2px);}
+    .social-btn.telegram-chan{background:rgba(255,90,31,0.15);border:1px solid rgba(255,90,31,0.4);color:#fdba74;}
+    .social-btn.telegram-chan:hover{background:var(--orange);color:#180602;box-shadow:0 0 20px var(--orange-glow);transform:translateY(-2px);}
     .support-alert{
       padding:10px 12px;border-radius:10px;background:rgba(0,0,0,0.4);border-left:3px solid var(--teal);
       font-size:11px;color:#cbd5e1;line-height:1.4;margin-top:10px;
@@ -229,32 +221,66 @@
     .trust{display:flex;flex-wrap:wrap;gap:18px;margin-top:30px;padding-top:24px;border-top:1px solid var(--line);color:#cbd9d7;font-size:11.5px;font-weight:700}
     .trust span:before{content:"✓";color:var(--teal);margin-right:7px;font-weight:900}
     
-    .hero-media{
+    /* Interactive Player Mockup in Hero */
+    .hero-player-mockup{
       position:relative;min-height:460px;border:1px solid var(--line-bright);
       border-radius:26px;overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,.8), 0 0 35px rgba(0,242,254,0.15);
+      background:#040c12;display:flex;flex-direction:column;
+    }
+    .mockup-header{
+      display:flex;align-items:center;justify-content:space-between;padding:12px 18px;
+      background:rgba(3,7,10,0.85);border-bottom:1px solid var(--line);
+    }
+    .mockup-dots{display:flex;gap:6px}
+    .mockup-dots span{width:9px;height:9px;border-radius:50%;background:#334155}
+    .mockup-dots span:nth-child(1){background:#ef4444}
+    .mockup-dots span:nth-child(2){background:#f59e0b}
+    .mockup-dots span:nth-child(3){background:#10b981}
+    .mockup-title{font-size:11px;font-family:var(--mono);color:var(--teal);font-weight:800}
+
+    .mockup-body{
+      position:relative;flex:1;display:grid;grid-template-columns:1.6fr 1fr;
       background:radial-gradient(circle at center, #0b2d38 0%, #040e13 100%);
     }
-    .hero-preview-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;padding:26px;height:100%;align-content:center}
-    .hero-box{
-      background:rgba(4,14,19,0.75);border:1px solid var(--line);
-      border-radius:16px;padding:18px;backdrop-filter:blur(12px);
-      transition:.3s;box-shadow:0 10px 25px rgba(0,0,0,0.4);
+    .player-stream-view{
+      position:relative;display:flex;flex-direction:column;justify-content:space-between;padding:20px;
+      background-image:url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=800&q=80');
+      background-size:cover;background-position:center;
     }
-    .hero-box:hover{transform:translateY(-4px);border-color:var(--teal);box-shadow:0 15px 35px rgba(0,242,254,0.2)}
-    .hero-box span{display:inline-block;padding:4px 8px;border-radius:6px;background:rgba(255,90,31,0.18);color:#ff9a76;font-size:9.5px;font-weight:800;letter-spacing:0.1em;border:1px solid rgba(255,90,31,0.3)}
-    .hero-box b{display:block;margin-top:10px;font-size:15px}
-    .hero-box p{font-size:11px;color:var(--muted);margin-top:4px}
+    .player-stream-view::after{
+      content:'';position:absolute;inset:0;background:linear-gradient(to top, rgba(3,7,10,0.9), transparent 60%);
+    }
+    .stream-tag{
+      position:relative;z-index:2;align-self:flex-start;display:flex;align-items:center;gap:6px;
+      padding:4px 9px;border-radius:6px;background:rgba(239,68,68,0.9);color:#fff;font-size:9.5px;font-weight:900;
+    }
+    .stream-info{position:relative;z-index:2}
+    .stream-info b{display:block;font-size:16px;text-shadow:0 2px 8px rgba(0,0,0,0.8)}
+    .stream-info small{color:var(--teal);font-size:11px;font-weight:700}
     
-    .hero-stat{
-      position:absolute;z-index:2;left:20px;right:20px;bottom:16px;
-      display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line-bright);
-      background:rgba(4,14,19,0.92);backdrop-filter:blur(16px);border-radius:16px;
-      box-shadow:0 10px 30px rgba(0,0,0,0.6);
+    .player-channel-list{
+      background:rgba(4,14,19,0.9);border-left:1px solid var(--line);padding:14px;
+      display:flex;flex-direction:column;gap:8px;overflow-y:auto;
     }
-    .hero-stat div{padding:14px 18px}
-    .hero-stat div+div{border-left:1px solid var(--line)}
-    .hero-stat small{display:block;color:var(--teal);font-size:8.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
-    .hero-stat b{display:block;margin-top:4px;color:#f8fafc;font-size:13px}
+    .channel-item{
+      display:flex;align-items:center;justify-content:space-between;padding:8px 10px;
+      border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid transparent;font-size:11px;
+    }
+    .channel-item.active{
+      background:rgba(0,242,254,0.12);border-color:var(--teal);color:var(--teal);font-weight:800;
+    }
+    .channel-item small{color:var(--muted);font-size:9px}
+
+    /* Spotlight Glow Layer on Cards */
+    .spotlight-card{
+      position:relative;overflow:hidden;
+    }
+    .spotlight-card::before{
+      content:'';position:absolute;top:var(--mouse-y, -150px);left:var(--mouse-x, -150px);
+      width:220px;height:220px;background:radial-gradient(circle, rgba(0,242,254,0.18), transparent 70%);
+      transform:translate(-50%, -50%);pointer-events:none;border-radius:50%;opacity:0;transition:opacity .3s;z-index:3;
+    }
+    .spotlight-card:hover::before{opacity:1}
 
     /* Sections */
     .section{padding:96px 0;border-top:1px solid var(--line);position:relative}
@@ -371,7 +397,8 @@
     .plan-tag{color:var(--teal);font-size:11px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
     .price{margin-top:16px;font-size:44px;font-weight:900;letter-spacing:-.06em}
     .price small{font-size:14px;color:var(--muted);font-weight:600}
-    .plan p{min-height:40px;margin-top:10px;color:var(--muted);font-size:12.5px;line-height:1.55}
+    .plan-per-month{font-size:11.5px;color:#ccfbf1;font-family:var(--mono);font-weight:800;margin-top:4px}
+    .plan p{min-height:36px;margin-top:10px;color:var(--muted);font-size:12.5px;line-height:1.55}
     .plan ul{margin:22px 0;padding:20px 0 0;border-top:1px solid var(--line);list-style:none;color:#e2e8f0;font-size:11.5px;line-height:2.1}
     .plan li:before{content:"✓";margin-right:9px;color:var(--teal);font-weight:900}
     .plan .button{margin-top:auto}
@@ -458,6 +485,8 @@
       .modal-head,.modal-body{padding:20px 16px}
       .modal-foot{flex-direction:column;align-items:stretch}
       .hero-actions .button{width:100%}
+      .mockup-body{grid-template-columns:1fr}
+      .player-channel-list{display:none}
     }
   </style>
 </head>
@@ -471,8 +500,15 @@
   </div>
   
   <div class="notice">
-    <span class="notice-dot"></span>
-    <span>Servidores CDN Anti-Freeze · Grade 4K/FHD 60FPS · Suporte Discord & Telegram 24h</span>
+    <span class="notice-item">
+      <span class="notice-dot"></span>
+      <span>Servidores CDN Anti-Freeze · Grade 4K 60FPS</span>
+    </span>
+    <span class="scarcity-bar-wrap">
+      <span>Vagas Teste Hoje:</span>
+      <span class="scarcity-track"><span class="scarcity-fill"></span></span>
+      <span style="color:var(--teal)">88% Ocupadas</span>
+    </span>
   </div>
 
   <nav class="nav">
@@ -517,32 +553,46 @@
             <span>Áudio Dolby 5.1 & HDR</span>
           </div>
         </div>
-        <div class="hero-media">
-          <div class="hero-preview-grid">
-            <div class="hero-box">
-              <span>FUTEBOL AO VIVO</span>
-              <b>Premiere & Libertadores</b>
-              <p>Transmissões 60FPS sem delay</p>
+
+        <!-- Mockup Interativo do Player -->
+        <div class="hero-player-mockup spotlight-card">
+          <div class="mockup-header">
+            <div class="mockup-dots">
+              <span></span><span></span><span></span>
             </div>
-            <div class="hero-box">
-              <span>STREAMING VIP</span>
-              <b>Filmes & Séries On-Demand</b>
-              <p>+80.000 títulos atualizados</p>
-            </div>
-            <div class="hero-box">
-              <span>INFANTIL & ANIMES</span>
-              <b>Canais 24h & Desenhos</b>
-              <p>Controle parental inteligente</p>
-            </div>
-            <div class="hero-box">
-              <span>REPLAY 7 DIAS</span>
-              <b>Gravação Automática</b>
-              <p>Assista quando quiser</p>
-            </div>
+            <div class="mockup-title">● IPTV BRASIL VIP ENGINE 4K</div>
+            <span style="font-size:10px;color:#10b981;font-weight:900">CDN ATIVA</span>
           </div>
-          <div class="hero-stat">
-            <div><small>Disponibilidade</small><b>99.9% Uptime CDN</b></div>
-            <div><small>Qualidade</small><b>SD / HD / FHD / 4K</b></div>
+          <div class="mockup-body">
+            <div class="player-stream-view">
+              <div class="stream-tag">● TRANSMISSÃO AO VIVO (60 FPS)</div>
+              <div class="stream-info">
+                <b>Premiere FC: Final da Rodada</b>
+                <small>4K Ultra HD · Áudio Dolby Atmos 5.1</small>
+              </div>
+            </div>
+            <div class="player-channel-list">
+              <div class="channel-item active">
+                <span>01. Premiere FC 4K</span>
+                <small>AO VIVO</small>
+              </div>
+              <div class="channel-item">
+                <span>02. Champions League</span>
+                <small>60 FPS</small>
+              </div>
+              <div class="channel-item">
+                <span>03. HBO Max Filmes</span>
+                <small>4K HDR</small>
+              </div>
+              <div class="channel-item">
+                <span>04. Combate UFC HD</span>
+                <small>AO VIVO</small>
+              </div>
+              <div class="channel-item">
+                <span>05. Discovery Kids</span>
+                <small>24H</small>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -551,7 +601,7 @@
     <!-- Speed Test Widget -->
     <section id="velocidade" class="section">
       <div class="container">
-        <div class="speed-widget">
+        <div class="speed-widget spotlight-card">
           <div>
             <div class="eyebrow">Diagnóstico de Rede</div>
             <h2 style="font-size:28px;margin:8px 0;">Sua internet é compatível com 4K?</h2>
@@ -783,7 +833,7 @@
           </label>
         </div>
         <div class="modal-foot">
-          <p>Você será redirecionado com sua solicitação pronta para ativação imediata.</p>
+          <p>Você será redirecionado com o seu protocolo gerado para ativação instantânea.</p>
           <button class="button" id="continueButton" onclick="continueWhatsApp()">Ativar no WhatsApp →</button>
         </div>
       </div>
@@ -815,9 +865,9 @@
     ];
 
     const basePlans = [
-      {name:'Acesso Mensal', basePrice:20, screenExtra:[0, 10, 18], detail:'Flexibilidade total sem fidelidade.', features:['Grade completa 4K/FHD/SD','Futebol, Esportes e Premiere','Filmes & Séries On Demand','Guia de Programação (EPG)','Suporte WhatsApp, Discord & Telegram']},
-      {name:'Acesso Trimestral', basePrice:55, screenExtra:[0, 20, 35], featured:true, badge:'Mais Escolhido', detail:'Economia ideal para acompanhar campeonatos.', features:['Todos os benefícios do Mensal','Servidor Prioritário VIP CDN','Replay de 7 dias habilitado','Economia no valor por mês','Suporte com fila prioritária']},
-      {name:'Acesso Anual', basePrice:130, screenExtra:[0, 45, 80], detail:'Máxima economia e estabilidade contínua.', features:['Acesso completo por 12 meses','Bloqueio contra reajustes','Garantia total de funcionamento','Suporte VIP Dedicado','Acesso antecipado a novidades']}
+      {name:'Acesso Mensal', basePrice:20, screenExtra:[0, 10, 18], detail:'Flexibilidade total sem fidelidade.', months:1, features:['Grade completa 4K/FHD/SD','Futebol, Esportes e Premiere','Filmes & Séries On Demand','Guia de Programação (EPG)','Suporte WhatsApp, Discord & Telegram']},
+      {name:'Acesso Trimestral', basePrice:55, screenExtra:[0, 20, 35], featured:true, badge:'Mais Escolhido', months:3, detail:'Economia ideal para acompanhar campeonatos.', features:['Todos os benefícios do Mensal','Servidor Prioritário VIP CDN','Replay de 7 dias habilitado','Economia no valor por mês','Suporte com fila prioritária']},
+      {name:'Acesso Anual', basePrice:130, screenExtra:[0, 45, 80], badge:'Maior Economia (45% OFF)', months:12, detail:'Máxima economia e estabilidade contínua.', features:['Acesso completo por 12 meses','Bloqueio contra reajustes','Garantia total de funcionamento','Suporte VIP Dedicado','Acesso antecipado a novidades']}
     ];
 
     let activePlatform = platforms[0];
@@ -826,6 +876,34 @@
     let selectedDevice = platforms[0].label;
     let installed = null;
     let content = 'sem';
+
+    /* Auto-detecção inteligente de dispositivo */
+    function detectUserDevice(){
+      const ua = navigator.userAgent || '';
+      if(/iPhone|iPad|iPod/i.test(ua)){
+        selectedDevice = 'iPhone / iPad / Apple TV';
+      } else if(/Android/i.test(ua)){
+        selectedDevice = 'Android TV / TV Box / Fire TV';
+      } else if(/Tizen/i.test(ua)){
+        selectedDevice = 'Smart TV Samsung';
+      } else if(/WebOS|LG/i.test(ua)){
+        selectedDevice = 'Smart TV LG (WebOS)';
+      }
+      activePlatform = platforms.find(p => p.label === selectedDevice) || platforms[0];
+    }
+
+    /* Mouse Spotlight Tracking */
+    function setupSpotlight(){
+      document.querySelectorAll('.spotlight-card').forEach(card => {
+        card.addEventListener('mousemove', e => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          card.style.setProperty('--mouse-x', `${x}px`);
+          card.style.setProperty('--mouse-y', `${y}px`);
+        });
+      });
+    }
 
     function toggleMenu(){
       const drawer = document.querySelector('#drawer');
@@ -845,7 +923,7 @@
 
       document.querySelector('#count').textContent = `${filtered.length} DISPONÍVEIS`;
       document.querySelector('#library').innerHTML = filtered.length ? filtered.map(item => `
-        <article class="poster">
+        <article class="poster spotlight-card">
           <div class="poster-bg" style="background-image:url('${item.img}')"></div>
           <div class="poster-gradient"></div>
           <div class="poster-content">
@@ -858,6 +936,7 @@
           </div>
         </article>
       `).join('') : `<p style="grid-column:1/-1;padding:40px;text-align:center;border:1px dashed var(--line);color:var(--muted)">Nenhum canal ou conteúdo encontrado para esta busca.</p>`;
+      setupSpotlight();
     }
 
     function renderTabs(){
@@ -911,17 +990,20 @@
       document.querySelector('#plans').innerHTML = basePlans.map(p => {
         const extra = p.screenExtra[screens - 1];
         const finalPrice = p.basePrice + extra;
+        const perMonth = (finalPrice / p.months).toFixed(2).replace('.', ',');
         return `
-          <article class="plan ${p.featured?'featured':''}">
+          <article class="plan ${p.featured?'featured':''} spotlight-card">
             ${p.badge ? `<span class="plan-badge">${p.badge}</span>` : ''}
             <span class="plan-tag">${p.name} · ${screens} ${screens===1?'TELA':'TELAS'}</span>
             <div class="price">R$ ${finalPrice} <small>/período</small></div>
+            <div class="plan-per-month">Apenas R$ ${perMonth}/mês</div>
             <p>${p.detail}</p>
             <ul>${p.features.map(f => `<li>${f}</li>`).join('')}</ul>
             <button class="button ${p.featured?'':'secondary'}" onclick="openAccess('planos',null,'${p.name}')">Contratar ${p.name} →</button>
           </article>
         `;
       }).join('');
+      setupSpotlight();
     }
 
     function runSpeedTest(){
@@ -1038,10 +1120,12 @@
       const app = document.querySelector('#appPref').value;
       const installStatus = installed === 'sim' ? 'App já instalado' : installed === 'nao' ? 'Preciso do tutorial de instalação' : 'Status de instalação pendente';
       const prefAdult = content === 'com' ? 'Com canais +18 (Maioridade Confirmada)' : 'Sem canais +18';
+      const protocol = '#VIP-' + Math.floor(1000 + Math.random() * 9000);
 
       let msg = '';
       if(mode === 'teste'){
-        msg = `Olá! Gostaria de solicitar o *TESTE GRÁTIS VIP (4 Horas)*.\n\n` +
+        msg = `Olá! Gostaria de solicitar o *TESTE GRÁTIS VIP (4 Horas)*.\n` +
+              `📋 *Protocolo:* ${protocol}\n\n` +
               `📱 *Aparelho:* ${selectedDevice} (${model})\n` +
               `⚙️ *App:* ${app}\n` +
               `📥 *Status:* ${installStatus}\n` +
@@ -1049,7 +1133,8 @@
               `Poderiam gerar meus dados de acesso?`;
       } else {
         const finalPrice = selectedPlan.basePrice + selectedPlan.screenExtra[screens - 1];
-        msg = `Olá! Gostaria de assinar o *${selectedPlan.name.toUpperCase()}* (${screens} ${screens===1?'Tela':'Telas'} por R$ ${finalPrice}).\n\n` +
+        msg = `Olá! Gostaria de assinar o *${selectedPlan.name.toUpperCase()}* (${screens} ${screens===1?'Tela':'Telas'} por R$ ${finalPrice}).\n` +
+              `📋 *Protocolo:* ${protocol}\n\n` +
               `📱 *Aparelho:* ${selectedDevice} (${model})\n` +
               `⚙️ *App:* ${app}\n` +
               `🔞 *Conteúdo Adulto:* ${prefAdult}\n\n` +
@@ -1064,10 +1149,13 @@
       document.querySelector('#backTop').style.display = window.scrollY > 500 ? 'inline-block' : 'none';
     });
 
+    // Inicialização
+    detectUserDevice();
     renderTabs();
     renderCatalog();
     renderPlatforms();
     renderPlans();
+    setupSpotlight();
     setTimeout(triggerToast, 3000);
   </script>
 </body>
