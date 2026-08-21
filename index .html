@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+<title>Deexter Clone — Clonagem Profissional Discord</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+/* ===== RESET ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:oklch(0.08 0.02 280);
+  --fg:oklch(0.92 0.01 250);
+  --card:oklch(0.12 0.025 280);
+  --muted:oklch(0.62 0.01 250);
+  --muted-fg:oklch(0.62 0.01 250);
+  --primary:oklch(0.72 0.22 195);
+  --primary-fg:oklch(0.08 0.02 280);
+  --secondary:oklch(0.18 0.03 280);
+  --border:oklch(0.25 0.04 280);
+  --input:oklch(0.20 0.03 280);
+  --destructive:oklch(0.65 0.25 15);
+  --radius:0.65rem;
+  --green:#4ade80;
+  --youtube:#FF0000;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{
+  font-family:'Rajdhani',sans-serif;
+  background:var(--bg);
+  color:var(--fg);
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+/* ===== BACKGROUND LAYERS ===== */
+.grid-bg{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    linear-gradient(oklch(0.72 0.22 195 / 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.72 0.22 195 / 0.04) 1px, transparent 1px);
+  background-size:40px 40px;
+}
+.scanline-bg{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,oklch(0.72 0.22 195 / 0.015) 2px,oklch(0.72 0.22 195 / 0.015) 4px);
+}
+.radial-bg{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 20% 0%, oklch(0.72 0.22 195 / 0.08) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, oklch(0.65 0.25 310 / 0.08) 0%, transparent 50%);
+}
+/* ===== UTILS ===== */
+.neon-text{text-shadow:0 0 8px oklch(0.72 0.22 195 / 0.6),0 0 24px oklch(0.72 0.22 195 / 0.3)}
+.neon-text-purple{text-shadow:0 0 8px oklch(0.65 0.25 310 / 0.6),0 0 24px oklch(0.65 0.25 310 / 0.3)}
+.neon-border{box-shadow:0 0 0 1px oklch(0.72 0.22 195 / 0.3),0 0 16px oklch(0.72 0.22 195 / 0.15)}
+.neon-glow{box-shadow:0 0 24px oklch(0.72 0.22 195 / 0.25),0 0 48px oklch(0.72 0.22 195 / 0.1)}
+.container{width:100%;max-width:1280px;margin:0 auto;padding:0 1rem}
+@media(min-width:640px){.container{padding:0 1.5rem}}
+@media(min-width:1024px){.container{padding:0 2rem}}
+.font-orbitron{font-family:'Orbitron',sans-serif}
+.font-mono{font-family:'JetBrains Mono',monospace}
+.font-rajdhani{font-family:'Rajdhani',sans-serif}
+
+/* ===== NAV ===== */
+nav{
+  position:relative;z-index:50;
+  border-bottom:1px solid oklch(0.25 0.04 280 / 0.5);
+  backdrop-filter:blur(8px);
+  background:oklch(0.08 0.02 280 / 0.6);
+}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
+.nav-logo{display:flex;align-items:center;gap:12px}
+.logo-icon{
+  width:40px;height:40px;border-radius:8px;
+  background:oklch(0.72 0.22 195 / 0.1);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+.logo-icon svg{width:20px;height:20px;color:var(--primary)}
+.logo-dot{
+  position:absolute;top:-4px;right:-4px;
+  width:12px;height:12px;border-radius:50%;
+  background:var(--primary);
+  animation:pulse-ring 2s cubic-bezier(0.4,0,0.6,1) infinite;
+}
+@keyframes pulse-ring{0%,100%{opacity:0.4;transform:scale(1)}50%{opacity:0.8;transform:scale(1.15)}}
+.logo-text h1{font-family:'Orbitron',sans-serif;font-size:1.25rem;font-weight:900;letter-spacing:-0.02em;line-height:1}
+.logo-text p{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.2em;color:var(--muted);margin-top:2px}
+.nav-status{display:flex;align-items:center;gap:24px;font-size:14px;color:var(--muted)}
+.nav-status span{display:flex;align-items:center;gap:6px}
+.nav-status svg{width:16px;height:16px;color:var(--primary)}
+@media(max-width:900px){.nav-status{display:none}}
+
+/* ===== HAMBURGER MENU ===== */
+.nav-actions{display:flex;align-items:center;gap:16px}
+.hamburger-btn{
+  background:none;border:none;cursor:pointer;
+  padding:8px;color:var(--fg);
+  border-radius:6px;
+  transition:background 0.2s;
+  display:flex;align-items:center;justify-content:center;
+}
+.hamburger-btn:hover{background:oklch(0.20 0.03 280 / 0.5)}
+.hamburger-btn svg{width:24px;height:24px;display:block}
+
+/* Mobile Menu */
+.mobile-menu{
+  display:none;
+  position:absolute;top:64px;right:0;width:280px;
+  background:oklch(0.10 0.025 280 / 0.95);
+  backdrop-filter:blur(12px);
+  border:1px solid oklch(0.25 0.04 280 / 0.5);
+  border-top:none;
+  border-radius:0 0 12px 12px;
+  padding:12px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.5);
+  z-index:49;
+}
+.mobile-menu.open{display:block}
+.mobile-menu-item{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 16px;border-radius:8px;
+  color:var(--fg);text-decoration:none;
+  font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;
+  transition:all 0.2s;
+  cursor:pointer;
+  border:1px solid transparent;
+}
+.mobile-menu-item:hover{
+  background:oklch(0.20 0.03 280 / 0.5);
+  border-color:oklch(0.72 0.22 195 / 0.3);
+}
+.mobile-menu-item svg{width:18px;height:18px;flex-shrink:0}
+.mobile-menu-item.youtube{color:var(--youtube)}
+.mobile-menu-item.youtube svg{color:var(--youtube)}
+
+@media(max-width:768px){
+  .hamburger-btn{display:flex}
+}
+
+/* ===== HERO ===== */
+.hero{text-align:center;margin-bottom:48px;padding-top:48px}
+@media(min-width:768px){.hero{margin-bottom:64px;padding-top:80px}}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 16px;border-radius:999px;
+  border:1px solid oklch(0.72 0.22 195 / 0.3);
+  background:oklch(0.72 0.22 195 / 0.05);
+  margin-bottom:24px;
+}
+.hero-badge svg{width:14px;height:14px;color:var(--primary)}
+.hero-badge span{font-family:'JetBrains Mono',monospace;font-size:12px;text-transform:uppercase;letter-spacing:0.15em;color:var(--primary)}
+.hero h2{
+  font-family:'Orbitron',sans-serif;
+  font-size:2.5rem;font-weight:900;line-height:1.1;
+  margin-bottom:16px;
+  animation:glitch 3s infinite;
+}
+@media(min-width:768px){.hero h2{font-size:4rem}}
+@keyframes glitch{0%,92%,100%{transform:translate(0)}93%{transform:translate(-1px,1px)}94%{transform:translate(1px,-1px)}95%{transform:translate(-1px,0)}96%{transform:translate(1px,1px)}97%{transform:translate(0,-1px)}}
+.hero p{font-size:1.125rem;color:var(--muted);max-width:640px;margin:0 auto}
+@media(min-width:768px){.hero p{font-size:1.25rem}}
+
+/* ===== CARD ===== */
+.clone-card{
+  position:relative;max-width:640px;margin:0 auto;
+  padding:24px;border-radius:16px;
+  background:oklch(0.12 0.025 280 / 0.8);
+  backdrop-filter:blur(16px);
+  border:1px solid oklch(0.25 0.04 280 / 0.6);
+  box-shadow:0 0 0 1px oklch(0.72 0.22 195 / 0.3),0 0 16px oklch(0.72 0.22 195 / 0.15);
+  overflow:hidden;
+}
+@media(min-width:768px){.clone-card{padding:32px}}
+.corner-tl{position:absolute;top:0;left:0;width:64px;height:64px;border-top:2px solid oklch(0.72 0.22 195 / 0.4);border-left:2px solid oklch(0.72 0.22 195 / 0.4);border-top-left-radius:16px}
+.corner-br{position:absolute;bottom:0;right:0;width:64px;height:64px;border-bottom:2px solid oklch(0.72 0.22 195 / 0.4);border-right:2px solid oklch(0.72 0.22 195 / 0.4);border-bottom-right-radius:16px}
+.card-header{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.card-header .bar{width:4px;height:32px;background:var(--primary);border-radius:999px;box-shadow:0 0 24px oklch(0.72 0.22 195 / 0.25),0 0 48px oklch(0.72 0.22 195 / 0.1)}
+.card-header h3{font-family:'Orbitron',sans-serif;font-size:1.125rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em}
+.card-header p{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-top:2px}
+
+/* ===== FORM ===== */
+.form-group{margin-bottom:20px}
+.form-label{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;margin-bottom:8px;font-family:'Rajdhani',sans-serif}
+.form-label svg{width:16px;height:16px;color:var(--primary)}
+.input-wrap{position:relative}
+.form-input{
+  width:100%;padding:10px 16px;
+  font-family:'JetBrains Mono',monospace;font-size:14px;
+  background:oklch(0.20 0.03 280 / 0.5);
+  border:1px solid oklch(0.25 0.04 280 / 0.6);
+  border-radius:8px;color:var(--fg);
+  outline:none;transition:border-color 0.2s;
+}
+.form-input:focus{border-color:oklch(0.72 0.22 195 / 0.6)}
+.form-input:disabled{opacity:0.5;cursor:not-allowed}
+.form-input::placeholder{color:oklch(0.62 0.01 250 / 0.5)}
+.toggle-btn{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;
+  transition:color 0.2s;
+}
+.toggle-btn:hover{color:var(--primary)}
+.form-hint{font-size:12px;color:oklch(0.62 0.01 250 / 0.7);margin-top:6px;font-family:'Rajdhani',sans-serif}
+.arrow-down{display:flex;justify-content:center;margin:-4px 0}
+.arrow-down svg{width:24px;height:24px;color:oklch(0.72 0.22 195 / 0.5);transform:rotate(90deg)}
+
+/* ===== BUTTON ===== */
+.btn{
+  width:100%;height:48px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.05em;
+  border:none;border-radius:8px;cursor:pointer;
+  transition:all 0.2s;
+}
+.btn:active{transform:scale(0.98)}
+.btn-primary{
+  background:var(--primary);color:var(--primary-fg);
+  box-shadow:0 0 24px oklch(0.72 0.22 195 / 0.25),0 0 48px oklch(0.72 0.22 195 / 0.1);
+}
+.btn-primary:hover{background:oklch(0.72 0.22 195 / 0.9)}
+.btn-primary:disabled{opacity:0.6;cursor:not-allowed}
+.btn-outline{
+  background:transparent;color:var(--fg);
+  border:1px solid oklch(0.72 0.22 195 / 0.4);
+}
+.btn-outline:hover{background:oklch(0.72 0.22 195 / 0.1)}
+.btn svg{width:20px;height:20px}
+
+/* ===== PROGRESS ===== */
+.progress-card{
+  max-width:640px;margin:24px auto 0;
+  padding:24px;border-radius:16px;
+  background:oklch(0.12 0.025 280 / 0.8);
+  backdrop-filter:blur(16px);
+  border:1px solid oklch(0.25 0.04 280 / 0.6);
+  overflow:hidden;position:relative;
+}
+@media(min-width:768px){.progress-card{padding:32px}}
+.progress-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.progress-header-left{display:flex;align-items:center;gap:12px}
+.progress-header-left .bar{width:4px;height:32px;background:var(--primary);border-radius:999px;box-shadow:0 0 24px oklch(0.72 0.22 195 / 0.25)}
+.progress-header h3{font-family:'Orbitron',sans-serif;font-size:1.125rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em}
+.progress-header p{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-top:2px}
+.status-badge{display:flex;align-items:center;gap:8px;padding:4px 12px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:12px;text-transform:uppercase;letter-spacing:0.05em}
+.status-badge.running{background:oklch(0.72 0.22 195 / 0.1);border:1px solid oklch(0.72 0.22 195 / 0.3)}
+.status-badge.running span{color:var(--primary)}
+.status-badge.success{background:oklch(0.74 0.2 145 / 0.1);border:1px solid oklch(0.74 0.2 145 / 0.3)}
+.status-badge.success span{color:var(--green)}
+.status-badge.error{background:oklch(0.65 0.25 15 / 0.1);border:1px solid oklch(0.65 0.25 15 / 0.3)}
+.status-badge.error span{color:var(--destructive)}
+.status-dot{width:8px;height:8px;border-radius:50%}
+.status-dot.running{background:var(--primary);animation:pulse-ring 1.5s infinite}
+.status-dot.success{background:var(--green)}
+.status-dot.error{background:var(--destructive)}
+.progress-message{
+  margin-bottom:24px;padding:12px 16px;border-radius:8px;
+  background:oklch(0.20 0.03 280 / 0.3);
+  border:1px solid oklch(0.25 0.04 280 / 0.4);
+  font-size:14px;display:flex;align-items:flex-start;gap:8px;
+}
+.spinner{width:16px;height:16px;border:2px solid transparent;border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0;margin-top:2px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.step-list{display:flex;flex-direction:column;gap:8px}
+.step-item{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 16px;border-radius:8px;
+  border:1px solid;transition:all 0.3s;
+}
+.step-item.pending{border-color:oklch(0.25 0.04 280 / 0.3);opacity:0.5}
+.step-item.running{border-color:oklch(0.72 0.22 195 / 0.3);background:oklch(0.72 0.22 195 / 0.05)}
+.step-item.done{border-color:oklch(0.74 0.2 145 / 0.2);background:oklch(0.74 0.2 145 / 0.05)}
+.step-item.error{border-color:oklch(0.65 0.25 15 / 0.3);background:oklch(0.65 0.25 15 / 0.05)}
+.step-icon{width:20px;height:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.step-icon.pending{width:20px;height:20px;border-radius:50%;border:2px solid oklch(0.62 0.01 250 / 0.3)}
+.step-icon.running svg{width:20px;height:20px;color:var(--primary);animation:spin 0.8s linear infinite}
+.step-icon.done svg{width:20px;height:20px;color:var(--green)}
+.step-icon.error svg{width:20px;height:20px;color:var(--destructive)}
+.step-label{flex:1;font-size:14px;font-weight:500;font-family:'Rajdhani',sans-serif}
+.step-detail{font-size:12px;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace}
+.step-num{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:oklch(0.62 0.01 250 / 0.5)}
+.alert-box{margin-top:24px;padding:16px;border-radius:8px;display:flex;align-items:flex-start;gap:12px}
+.alert-box.error{background:oklch(0.65 0.25 15 / 0.1);border:1px solid oklch(0.65 0.25 15 / 0.3)}
+.alert-box.success{background:oklch(0.74 0.2 145 / 0.1);border:1px solid oklch(0.74 0.2 145 / 0.3)}
+.alert-box svg{width:20px;height:20px;flex-shrink:0;margin-top:2px}
+.alert-box.error svg{color:var(--destructive)}
+.alert-box.success svg{color:var(--green)}
+.alert-title{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px}
+.alert-box.error .alert-title{color:var(--destructive)}
+.alert-box.success .alert-title{color:var(--green)}
+.alert-msg{font-size:14px;color:oklch(0.92 0.01 250 / 0.8);font-family:'Rajdhani',sans-serif}
+
+/* ===== FEATURES ===== */
+.features{max-width:1024px;margin:80px auto 0;display:grid;grid-template-columns:1fr;gap:24px}
+@media(min-width:768px){.features{grid-template-columns:repeat(3,1fr)}}
+.feature-card{
+  padding:24px;border-radius:12px;
+  background:oklch(0.12 0.025 280 / 0.4);
+  border:1px solid oklch(0.25 0.04 280 / 0.4);
+  backdrop-filter:blur(8px);
+  transition:border-color 0.3s;
+}
+.feature-card:hover{border-color:oklch(0.72 0.22 195 / 0.3)}
+.feature-icon{
+  width:48px;height:48px;border-radius:8px;
+  background:oklch(0.72 0.22 195 / 0.1);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--primary);margin-bottom:16px;
+}
+.feature-icon svg{width:24px;height:24px}
+.feature-card h4{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px}
+.feature-card p{font-size:14px;color:var(--muted);font-family:'Rajdhani',sans-serif}
+
+/* ===== REQUIREMENTS ===== */
+.requirements{max-width:640px;margin:48px auto 0;padding:20px;border-radius:12px;background:oklch(0.12 0.025 280 / 0.4);border:1px solid oklch(0.25 0.04 280 / 0.4);backdrop-filter:blur(8px)}
+.requirements h4{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--primary);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.requirements h4 svg{width:16px;height:16px}
+.requirements ul{list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--muted);font-family:'Rajdhani',sans-serif}
+.requirements li{display:flex;align-items:flex-start;gap:8px}
+.requirements li span{color:var(--primary);margin-top:2px}
+
+/* ===== FOOTER ===== */
+footer{position:relative;z-index:10;border-top:1px solid oklch(0.25 0.04 280 / 0.5);margin-top:48px}
+footer p{text-align:center;padding:24px 0;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em}
+
+/* ===== TOAST ===== */
+.toast-container{position:fixed;top:20px;right:20px;z-index:100;display:flex;flex-direction:column;gap:8px;max-width:380px}
+.toast{
+  padding:12px 16px;border-radius:8px;
+  background:oklch(0.12 0.025 280 / 0.95);
+  backdrop-filter:blur(16px);
+  border:1px solid oklch(0.25 0.04 280 / 0.6);
+  font-size:14px;font-family:'Rajdhani',sans-serif;
+  animation:toast-in 0.3s ease-out;
+  display:flex;flex-direction:column;gap:4px;
+}
+@keyframes toast-in{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+.toast.success{border-color:oklch(0.74 0.2 145 / 0.4)}
+.toast.error{border-color:oklch(0.65 0.25 15 / 0.4)}
+.toast-title{font-weight:700;font-size:14px}
+.toast.success .toast-title{color:var(--green)}
+.toast.error .toast-title{color:var(--destructive)}
+.toast-desc{font-size:13px;color:var(--muted)}
+
+/* ===== API CONFIG ===== */
+.api-config{
+  max-width:640px;margin:24px auto 0;
+  padding:16px 20px;border-radius:12px;
+  background:oklch(0.12 0.025 280 / 0.4);
+  border:1px solid oklch(0.25 0.04 280 / 0.4);
+}
+.api-config label{font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px}
+.api-config input{width:100%;padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:13px;background:oklch(0.20 0.03 280 / 0.5);border:1px solid oklch(0.25 0.04 280 / 0.6);border-radius:6px;color:var(--fg);outline:none}
+.api-config input:focus{border-color:oklch(0.72 0.22 195 / 0.6)}
+.api-config p{font-size:12px;color:oklch(0.62 0.01 250 / 0.6);margin-top:6px;font-family:'Rajdhani',sans-serif}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="scanline-bg"></div>
+<div class="radial-bg"></div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Navigation -->
+<nav>
+  <div class="container nav-inner">
+    <div class="nav-logo">
+      <div class="logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        <div class="logo-dot"></div>
+      </div>
+      <div class="logo-text">
+        <h1 class="neon-text">DEEXTER<span style="color:var(--primary)">CLONE</span></h1>
+        <p>Server Cloner v3.0</p>
+      </div>
+    </div>
+    <div class="nav-status">
+      <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Seguro</span>
+      <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Rápido</span>
+      <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg> Tempo Real</span>
+    </div>
+    <div class="nav-actions">
+      <button class="hamburger-btn" id="hamburgerBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+      </button>
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="https://youtube.com/@apelawar_yt" target="_blank" class="mobile-menu-item youtube">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          <span>Criador</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Main content -->
+<main class="container" style="position:relative;z-index:10;padding-top:48px;padding-bottom:48px">
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-badge">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3z"/></svg>
+      <span>Clonagem Profissional Discord</span>
+    </div>
+    <h2>
+      <span class="neon-text">Clone Seu</span> <span style="color:var(--primary)" class="neon-text">Servidor</span><br>
+      <span class="neon-text-purple">em Segundos</span>
+    </h2>
+    <p>Copie cargos, canais, categorias, emojis e permissões de um servidor Discord para outro com precisão total. Rápido, seguro e em tempo real.</p>
+  </div>
+
+  <!-- API Config -->
+  <div class="api-config">
+    <label>URL do Backend (API tRPC)</label>
+    <input type="text" id="apiUrl" placeholder="https://seu-site.manus.space" value="" />
+    <p>Defina a URL do backend publicado. Se vazio, usará a URL atual do site.</p>
+  </div>
+
+  <!-- Clone panel -->
+  <div class="clone-card">
+    <div class="corner-tl"></div>
+    <div class="corner-br"></div>
+    <div class="card-header">
+      <div class="bar"></div>
+      <div>
+        <h3>Painel de Clonagem</h3>
+        <p>Preencha todos os campos para iniciar</p>
+      </div>
+    </div>
+    <div>
+      <!-- Token -->
+      <div class="form-group">
+        <label class="form-label" for="token">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
+          Token da Conta Discord
+        </label>
+        <div class="input-wrap">
+          <input type="password" id="token" class="form-input" placeholder="Cole aqui o token da sua conta..." disabled />
+          <button type="button" class="toggle-btn" id="toggleToken">Mostrar</button>
+        </div>
+        <p class="form-hint">O token é usado apenas para esta sessão e não é armazenado.</p>
+      </div>
+      <!-- Source -->
+      <div class="form-group">
+        <label class="form-label" for="sourceId">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="8" x="2" y="2" rx="2"/><path d="M2 12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2"/><path d="M6 18a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2"/></svg>
+          ID do Servidor de Origem
+        </label>
+        <input type="text" id="sourceId" class="form-input" placeholder="Ex: 123456789012345678" disabled />
+        <p class="form-hint">O servidor que será copiado.</p>
+      </div>
+      <!-- Arrow -->
+      <div class="arrow-down">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
+      <!-- Target -->
+      <div class="form-group">
+        <label class="form-label" for="targetId">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2 .9-2 2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          ID do Servidor Destino
+        </label>
+        <input type="text" id="targetId" class="form-input" placeholder="Ex: 876543210987654321" disabled />
+        <p class="form-hint">O servidor que receberá a cópia.</p>
+      </div>
+      <!-- Button -->
+      <div id="btnContainer">
+        <button class="btn btn-primary" id="cloneBtn" disabled>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Iniciar Clonagem
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress panel (hidden until clone starts) -->
+  <div class="progress-card" id="progressCard" style="display:none">
+    <div class="corner-tl"></div>
+    <div class="corner-br"></div>
+    <div class="progress-header">
+      <div class="progress-header-left">
+        <div class="bar"></div>
+        <div>
+          <h3 id="progressTitle">Progresso da Clonagem</h3>
+          <p id="progressServer">Processando...</p>
+        </div>
+      </div>
+      <div id="statusBadge"></div>
+    </div>
+    <div class="progress-message" id="progressMessage"></div>
+    <div class="step-list" id="stepList"></div>
+    <div id="alertBox"></div>
+  </div>
+
+  <!-- Features -->
+  <div class="features">
+    <div class="feature-card">
+      <div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <h4>Seguro</h4>
+      <p>Seu token não é armazenado. A clonagem acontece em uma sessão temporária.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+      <h4>Completo</h4>
+      <p>Copia cargos, emojis, categorias, canais de texto, voz e permissões.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg></div>
+      <h4>Tempo Real</h4>
+      <p>Acompanhe cada etapa da clonagem com atualizações em tempo real.</p>
+    </div>
+  </div>
+
+  <!-- Requirements -->
+  <div class="requirements">
+    <h4><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg> Requisitos</h4>
+    <ul>
+      <li><span>▸</span> A conta precisa estar presente em ambos os servidores (origem e destino).</li>
+      <li><span>▸</span> O token da conta será exigido para autenticação.</li>
+      <li><span>▸</span> Você precisa ter permissões de administrador no servidor destino.</li>
+      <li><span>▸</span> Todos os canais e cargos existentes no servidor destino serão substituídos.</li>
+    </ul>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p>Deexter Clone v3.0 — Baseado na script DeexterClone3</p>
+  </div>
+</footer>
+
+<script>
+// ===== STATE =====
+let jobId = null;
+let pollTimer = null;
+let isRunning = false;
+let showToken = false;
+
+const IDLE_STATE = {
+  status: "idle",
+  message: "",
+  steps: [],
+  startedAt: null,
+  finishedAt: null,
+  error: null,
+  serverName: null,
+};
+
+let cloneState = { ...IDLE_STATE };
+
+// ===== ICONS (SVG strings) =====
+const ICONS = {
+  check: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  x: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+  alert: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+  spinner: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>',
+  zap: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+};
+
+// ===== HAMBURGER MENU =====
+document.getElementById('hamburgerBtn').addEventListener('click', () => {
+  const menu = document.getElementById('mobileMenu');
+  menu.classList.toggle('open');
+});
+
+// Close menu when clicking outside
+document.addEventListener('click', (e) => {
+  const menu = document.getElementById('mobileMenu');
+  const btn = document.getElementById('hamburgerBtn');
+  if (!menu.contains(e.target) && !btn.contains(e.target)) {
+    menu.classList.remove('open');
+  }
+});
+
+// ===== TOAST =====
+function showToast(type, title, desc) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `<div class="toast-title">${title}</div>${desc ? `<div class="toast-desc">${desc}</div>` : ''}`;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(20px)';
+    toast.style.transition = 'all 0.3s';
+    setTimeout(() => toast.remove(), 300);
+  }, 5000);
+}
+
+// ===== API HELPERS =====
+function getApiBase() {
+  const input = document.getElementById('apiUrl').value.trim();
+  if (input) return input.replace(/\/$/, '');
+  return window.location.origin;
+}
+
+async function trpcRequest(procedure, type, input) {
+  const base = getApiBase();
+  const url = `${base}/api/trpc/${procedure}`;
+  
+  if (type === 'query') {
+    const qs = encodeURIComponent(JSON.stringify(input));
+    const res = await fetch(`${url}?input=${qs}`, {
+      headers: { 'Content-Type': 'application/json' },
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error?.message || `HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    return data.result?.data;
+  } else {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ json: input }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error?.message || `HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    return data.result?.data;
+  }
+}
+
+// ===== VALIDATION =====
+function validate() {
+  const token = document.getElementById('token').value.trim();
+  const sourceId = document.getElementById('sourceId').value.trim();
+  const targetId = document.getElementById('targetId').value.trim();
+
+  if (!token || token.length < 10) {
+    showToast('error', 'Token inválido', 'Insira um token válido da sua conta Discord.');
+    return false;
+  }
+  if (!sourceId || sourceId.length < 17) {
+    showToast('error', 'ID do servidor de origem inválido', 'O ID deve ter pelo menos 17 dígitos.');
+    return false;
+  }
+  if (!targetId || targetId.length < 17) {
+    showToast('error', 'ID do servidor destino inválido', 'O ID deve ter pelo menos 17 dígitos.');
+    return false;
+  }
+  if (sourceId === targetId) {
+    showToast('error', 'Servidores iguais', 'O servidor de origem e destino devem ser diferentes.');
+    return false;
+  }
+  return true;
+}
+
+// ===== CLONE FLOW =====
+async function handleClone() {
+  if (!validate()) return;
+  if (isRunning) return;
+
+  const token = document.getElementById('token').value.trim();
+  const sourceId = document.getElementById('sourceId').value.trim();
+  const targetId = document.getElementById('targetId').value.trim();
+
+  cloneState = { ...IDLE_STATE };
+  jobId = null;
+  isRunning = true;
+  updateUI();
+
+  try {
+    const result = await trpcRequest('clone.start', 'mutation', {
+      token,
+      sourceGuildId: sourceId,
+      targetGuildId: targetId,
+    });
+    jobId = result.jobId;
+    showToast('success', 'Clonagem iniciada!', 'Acompanhe o progresso em tempo real abaixo.');
+    startPolling();
+  } catch (err) {
+    showToast('error', 'Erro ao iniciar clonagem', err.message);
+    isRunning = false;
+    updateUI();
+  }
+}
+
+function startPolling() {
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(async () => {
+    if (!jobId) return;
+    try {
+      const data = await trpcRequest('clone.status', 'query', { jobId });
+      cloneState = data;
+      updateUI();
+
+      if (data.status === 'success') {
+        showToast('success', 'Servidor clonado com sucesso!', data.serverName ? `"${data.serverName}" foi clonado.` : undefined);
+        stopPolling();
+      } else if (data.status === 'error') {
+        showToast('error', 'Erro na clonagem', data.error || data.message);
+        stopPolling();
+      }
+    } catch (err) {
+      console.error('Poll error:', err);
+    }
+  }, 1000);
+}
+
+function stopPolling() {
+  if (pollTimer) {
+    clearInterval(pollTimer);
+    pollTimer = null;
+  }
+  isRunning = false;
+  updateUI();
+}
+
+function handleReset() {
+  stopPolling();
+  jobId = null;
+  cloneState = { ...IDLE_STATE };
+  document.getElementById('token').value = '';
+  document.getElementById('sourceId').value = '';
+  document.getElementById('targetId').value = '';
+  updateUI();
+}
+
+// ===== UI RENDER =====
+function updateUI() {
+  const isDone = cloneState.status === 'success' || cloneState.status === 'error';
+  const running = isRunning || cloneState.status === 'running';
+
+  // Enable/disable inputs
+  document.getElementById('token').disabled = running;
+  document.getElementById('sourceId').disabled = running;
+  document.getElementById('targetId').disabled = running;
+
+  // Button
+  const btnContainer = document.getElementById('btnContainer');
+  if (!isDone) {
+    btnContainer.innerHTML = `
+      <button class="btn btn-primary" id="cloneBtn" ${running ? 'disabled' : ''}>
+        ${running ? `<div class="spinner" style="border-top-color:var(--primary-fg);margin-right:8px"></div> Clonando...` : `${ICONS.zap} Iniciar Clonagem`}
+      </button>
+    `;
+    const btn = document.getElementById('cloneBtn');
+    if (btn) btn.addEventListener('click', handleClone);
+  } else {
+    btnContainer.innerHTML = `<button class="btn btn-outline" id="resetBtn">Nova Clonagem</button>`;
+    const btn = document.getElementById('resetBtn');
+    if (btn) btn.addEventListener('click', handleReset);
+  }
+
+  // Progress card
+  const progressCard = document.getElementById('progressCard');
+  if (running || isDone) {
+    if (cloneState.steps && cloneState.steps.length > 0) {
+      progressCard.style.display = 'block';
+      renderProgress();
+    }
+  } else {
+    progressCard.style.display = 'none';
+  }
+}
+
+function renderProgress() {
+  // Title
+  const title = document.getElementById('progressTitle');
+  if (cloneState.status === 'success') title.textContent = 'Clonagem Concluída';
+  else if (cloneState.status === 'error') title.textContent = 'Erro na Clonagem';
+  else title.textContent = 'Progresso da Clonagem';
+
+  // Server name
+  document.getElementById('progressServer').textContent = cloneState.serverName
+    ? `Servidor: ${cloneState.serverName}`
+    : 'Processando...';
+
+  // Status badge
+  const badge = document.getElementById('statusBadge');
+  if (cloneState.status === 'running') {
+    badge.innerHTML = `<div class="status-badge running"><div class="status-dot running"></div><span>Ativo</span></div>`;
+  } else if (cloneState.status === 'success') {
+    badge.innerHTML = `<div class="status-badge success"><div class="status-dot success"></div><span>Sucesso</span></div>`;
+  } else if (cloneState.status === 'error') {
+    badge.innerHTML = `<div class="status-badge error"><div class="status-dot error"></div><span>Falha</span></div>`;
+  }
+
+  // Message
+  const msg = document.getElementById('progressMessage');
+  let icon = '';
+  if (cloneState.status === 'running') icon = `<div class="spinner"></div>`;
+  else if (cloneState.status === 'success') icon = `<span style="color:var(--green)">${ICONS.check}</span>`;
+  else if (cloneState.status === 'error') icon = `<span style="color:var(--destructive)">${ICONS.alert}</span>`;
+  msg.innerHTML = `${icon}<span>${cloneState.message}</span>`;
+
+  // Steps
+  const stepList = document.getElementById('stepList');
+  stepList.innerHTML = cloneState.steps.map((step, idx) => {
+    let iconHtml = '';
+    if (step.status === 'pending') iconHtml = '<div class="step-icon pending"></div>';
+    else if (step.status === 'running') iconHtml = `<div class="step-icon running">${ICONS.spinner}</div>`;
+    else if (step.status === 'done') iconHtml = `<div class="step-icon done">${ICONS.check}</div>`;
+    else if (step.status === 'error') iconHtml = `<div class="step-icon error">${ICONS.x}</div>`;
+
+    return `
+      <div class="step-item ${step.status}">
+        ${iconHtml}
+        <div style="flex:1;min-width:0">
+          <div class="step-label">${step.label}</div>
+          ${step.detail ? `<div class="step-detail">${step.detail}</div>` : ''}
+        </div>
+        <span class="step-num">${String(idx + 1).padStart(2, '0')}</span>
+      </div>
+    `;
+  }).join('');
+
+  // Alert box
+  const alertBox = document.getElementById('alertBox');
+  if (cloneState.status === 'error' && cloneState.error) {
+    alertBox.innerHTML = `
+      <div class="alert-box error">
+        ${ICONS.alert}
+        <div>
+          <div class="alert-title">Erro</div>
+          <div class="alert-msg">${cloneState.error}</div>
+        </div>
+      </div>
+    `;
+  } else if (cloneState.status === 'success') {
+    alertBox.innerHTML = `
+      <div class="alert-box success">
+        ${ICONS.check}
+        <div>
+          <div class="alert-title">Concluído</div>
+          <div class="alert-msg">Servidor clonado com sucesso! Todos os cargos, canais, categorias e emojis foram copiados.</div>
+        </div>
+      </div>
+    `;
+  } else {
+    alertBox.innerHTML = '';
+  }
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  // Enable inputs
+  document.getElementById('token').disabled = false;
+  document.getElementById('sourceId').disabled = false;
+  document.getElementById('targetId').disabled = false;
+  document.getElementById('cloneBtn').disabled = false;
+
+  // Toggle token visibility
+  document.getElementById('toggleToken').addEventListener('click', () => {
+    showToken = !showToken;
+    const input = document.getElementById('token');
+    input.type = showToken ? 'text' : 'password';
+    document.getElementById('toggleToken').textContent = showToken ? 'Ocultar' : 'Mostrar';
+  });
+
+  // Clone button
+  document.getElementById('cloneBtn').addEventListener('click', handleClone);
+
+  // Save API URL to localStorage
+  const savedUrl = localStorage.getItem('deexter_api_url');
+  if (savedUrl) document.getElementById('apiUrl').value = savedUrl;
+  document.getElementById('apiUrl').addEventListener('change', (e) => {
+    localStorage.setItem('deexter_api_url', e.target.value);
+  });
+});
+</script>
+</body>
+</html>
