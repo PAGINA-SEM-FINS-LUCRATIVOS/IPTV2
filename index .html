@@ -1,874 +1,787 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-<title>Deexter Clone — Clonagem Profissional Discord</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<style>
-/* ===== RESET ===== */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:oklch(0.08 0.02 280);
-  --fg:oklch(0.92 0.01 250);
-  --card:oklch(0.12 0.025 280);
-  --muted:oklch(0.62 0.01 250);
-  --muted-fg:oklch(0.62 0.01 250);
-  --primary:oklch(0.72 0.22 195);
-  --primary-fg:oklch(0.08 0.02 280);
-  --secondary:oklch(0.18 0.03 280);
-  --border:oklch(0.25 0.04 280);
-  --input:oklch(0.20 0.03 280);
-  --destructive:oklch(0.65 0.25 15);
-  --radius:0.65rem;
-  --green:#4ade80;
-  --youtube:#FF0000;
-}
-html{font-size:16px;scroll-behavior:smooth}
-body{
-  font-family:'Rajdhani',sans-serif;
-  background:var(--bg);
-  color:var(--fg);
-  min-height:100vh;
-  overflow-x:hidden;
-  position:relative;
-}
-/* ===== BACKGROUND LAYERS ===== */
-.grid-bg{
-  position:fixed;inset:0;pointer-events:none;z-index:0;
-  background-image:
-    linear-gradient(oklch(0.72 0.22 195 / 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, oklch(0.72 0.22 195 / 0.04) 1px, transparent 1px);
-  background-size:40px 40px;
-}
-.scanline-bg{
-  position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,oklch(0.72 0.22 195 / 0.015) 2px,oklch(0.72 0.22 195 / 0.015) 4px);
-}
-.radial-bg{
-  position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(ellipse at 20% 0%, oklch(0.72 0.22 195 / 0.08) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, oklch(0.65 0.25 310 / 0.08) 0%, transparent 50%);
-}
-/* ===== UTILS ===== */
-.neon-text{text-shadow:0 0 8px oklch(0.72 0.22 195 / 0.6),0 0 24px oklch(0.72 0.22 195 / 0.3)}
-.neon-text-purple{text-shadow:0 0 8px oklch(0.65 0.25 310 / 0.6),0 0 24px oklch(0.65 0.25 310 / 0.3)}
-.neon-border{box-shadow:0 0 0 1px oklch(0.72 0.22 195 / 0.3),0 0 16px oklch(0.72 0.22 195 / 0.15)}
-.neon-glow{box-shadow:0 0 24px oklch(0.72 0.22 195 / 0.25),0 0 48px oklch(0.72 0.22 195 / 0.1)}
-.container{width:100%;max-width:1280px;margin:0 auto;padding:0 1rem}
-@media(min-width:640px){.container{padding:0 1.5rem}}
-@media(min-width:1024px){.container{padding:0 2rem}}
-.font-orbitron{font-family:'Orbitron',sans-serif}
-.font-mono{font-family:'JetBrains Mono',monospace}
-.font-rajdhani{font-family:'Rajdhani',sans-serif}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#07151b" />
+  <meta name="description" content="IPTV Brasil VIP — Canais ao vivo em 4K, Esportes, Filmes e Séries. Teste grátis guiado com suporte anti-travamento." />
+  <title>IPTV Brasil VIP — Filmes, Séries & Esportes 4K</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --ink:#07151b;--ink-2:#0b2029;--ink-3:#10323a;--cream:#fff7ed;
+      --muted:#b8c8c6;--teal:#9bd7c7;--teal-glow:rgba(155,215,199,0.35);
+      --orange:#ff5a1f;--orange-glow:rgba(255,90,31,0.3);
+      --line:rgba(183,221,207,.16);--serif:"DM Serif Display",Georgia,serif;
+      --sans:"Manrope",system-ui,sans-serif;--gold:#f59e0b;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:radial-gradient(circle at 15% 0%,rgba(69,176,158,.18),transparent 31rem),linear-gradient(180deg,var(--ink),#061016);color:var(--cream);font-family:var(--sans);min-width:320px;overflow-x:hidden}
+    button,input,select{font:inherit}
+    button,a{cursor:pointer}
+    button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--teal);outline-offset:3px}
+    .container{width:min(1180px,calc(100% - 40px));margin:auto}
+    .notice{border-bottom:1px solid var(--line);background:#0a222b;padding:10px 14px;color:#d7eee8;text-align:center;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+    
+    /* Nav */
+    .nav{position:sticky;top:0;z-index:20;background:rgba(7,21,27,.9);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+    .nav-inner{height:76px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+    .brand{display:flex;align-items:center;gap:10px;color:var(--cream);text-decoration:none}
+    .brand-icon{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--orange),#b83908);font-weight:900;font-size:16px;color:#fff;box-shadow:0 0 15px var(--orange-glow)}
+    .brand b{display:block;font-size:13px;letter-spacing:-.04em}
+    .brand small{display:block;color:#ff9a76;font-size:9px;font-weight:800;letter-spacing:.22em}
+    .nav-links{display:flex;gap:26px}
+    .nav-links a{color:#bdd0cc;text-decoration:none;font-size:12px;font-weight:700;transition:.2s}
+    .nav-links a:hover{color:#fff;text-shadow:0 0 8px rgba(255,255,255,0.4)}
+    
+    /* Buttons */
+    .button{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:1px solid transparent;border-radius:12px;padding:13px 18px;color:#1e0903;background:var(--orange);font-size:12px;font-weight:800;text-decoration:none;box-shadow:0 14px 32px var(--orange-glow);transition:.2s}
+    .button:hover{transform:translateY(-2px);background:#ff7442;box-shadow:0 18px 40px var(--orange-glow)}
+    .button.secondary{background:rgba(7,25,32,.7);border-color:rgba(183,221,207,.25);color:#ecf7f3;box-shadow:none}
+    .button.secondary:hover{background:#0e353c;border-color:rgba(155,215,199,.6)}
+    .hamburger{display:none;width:42px;height:42px;border:1px solid var(--line);background:rgba(155,215,199,.06);color:white}
+    
+    /* Hero */
+    .hero{position:relative;overflow:hidden;padding:96px 0 84px}
+    .hero-grid{display:grid;grid-template-columns:.92fr 1.08fr;gap:42px;align-items:center}
+    .eyebrow{display:flex;align-items:center;gap:9px;color:var(--teal);font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+    .eyebrow:before{content:"";width:26px;height:1px;background:currentColor}
+    h1{max-width:620px;margin:18px 0 22px;font-family:var(--serif);font-size:clamp(48px,6vw,90px);line-height:.92;letter-spacing:-.05em}
+    h1 em{color:#ff7950;font-weight:400;font-style:italic}
+    .hero-copy{max-width:550px;color:#c4d0cf;font-size:16px;line-height:1.75}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:11px;margin-top:28px}
+    .trust{display:flex;flex-wrap:wrap;gap:16px;margin-top:28px;padding-top:22px;border-top:1px solid var(--line);color:#cbd9d7;font-size:11px;font-weight:700}
+    .trust span:before{content:"✓";color:var(--teal);margin-right:7px;font-weight:900}
+    
+    .hero-media{position:relative;min-height:460px;border:1px solid rgba(183,221,207,.23);border-radius:22px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5);background:radial-gradient(circle at center, #103b45 0%, #06151c 100%)}
+    .hero-preview-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:24px;height:100%;align-content:center}
+    .hero-box{background:rgba(7,21,27,0.75);border:1px solid var(--line);border-radius:14px;padding:16px;backdrop-filter:blur(8px)}
+    .hero-box span{display:inline-block;padding:4px 8px;border-radius:6px;background:rgba(255,90,31,0.2);color:#ff9a76;font-size:9px;font-weight:800;letter-spacing:0.1em}
+    .hero-box b{display:block;margin-top:10px;font-size:15px}
+    .hero-box p{font-size:11px;color:#9eb4b1;margin-top:4px}
+    
+    .hero-stat{position:absolute;z-index:2;left:20px;right:20px;bottom:16px;display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);background:rgba(9,30,38,.92);backdrop-filter:blur(14px);border-radius:12px}
+    .hero-stat div{padding:14px 17px}
+    .hero-stat div+div{border-left:1px solid var(--line)}
+    .hero-stat small{display:block;color:var(--teal);font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+    .hero-stat b{display:block;margin-top:4px;color:#f5f0e9;font-size:12px}
 
-/* ===== NAV ===== */
-nav{
-  position:relative;z-index:50;
-  border-bottom:1px solid oklch(0.25 0.04 280 / 0.5);
-  backdrop-filter:blur(8px);
-  background:oklch(0.08 0.02 280 / 0.6);
-}
-.nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
-.nav-logo{display:flex;align-items:center;gap:12px}
-.logo-icon{
-  width:40px;height:40px;border-radius:8px;
-  background:oklch(0.72 0.22 195 / 0.1);
-  display:flex;align-items:center;justify-content:center;
-  position:relative;
-}
-.logo-icon svg{width:20px;height:20px;color:var(--primary)}
-.logo-dot{
-  position:absolute;top:-4px;right:-4px;
-  width:12px;height:12px;border-radius:50%;
-  background:var(--primary);
-  animation:pulse-ring 2s cubic-bezier(0.4,0,0.6,1) infinite;
-}
-@keyframes pulse-ring{0%,100%{opacity:0.4;transform:scale(1)}50%{opacity:0.8;transform:scale(1.15)}}
-.logo-text h1{font-family:'Orbitron',sans-serif;font-size:1.25rem;font-weight:900;letter-spacing:-0.02em;line-height:1}
-.logo-text p{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.2em;color:var(--muted);margin-top:2px}
-.nav-status{display:flex;align-items:center;gap:24px;font-size:14px;color:var(--muted)}
-.nav-status span{display:flex;align-items:center;gap:6px}
-.nav-status svg{width:16px;height:16px;color:var(--primary)}
-@media(max-width:900px){.nav-status{display:none}}
+    /* Sections */
+    .section{padding:92px 0;border-top:1px solid var(--line)}
+    .section-head{display:grid;grid-template-columns:.88fr 1.12fr;align-items:end;gap:38px}
+    .section h2{max-width:620px;margin:14px 0 0;font-family:var(--serif);font-size:clamp(36px,4vw,56px);line-height:.95;letter-spacing:-.045em}
+    .section-intro{max-width:620px;color:#c1d0ce;font-size:15px;line-height:1.75}
 
-/* ===== HAMBURGER MENU ===== */
-.nav-actions{display:flex;align-items:center;gap:16px}
-.hamburger-btn{
-  background:none;border:none;cursor:pointer;
-  padding:8px;color:var(--fg);
-  border-radius:6px;
-  transition:background 0.2s;
-  display:flex;align-items:center;justify-content:center;
-}
-.hamburger-btn:hover{background:oklch(0.20 0.03 280 / 0.5)}
-.hamburger-btn svg{width:24px;height:24px;display:block}
+    /* Speed Test Widget */
+    .speed-widget{margin-top:34px;padding:26px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,rgba(11,38,47,.9),rgba(5,17,23,.95));display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:center}
+    .speed-bar-wrap{height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;margin:14px 0}
+    .speed-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--teal),var(--orange));transition:width 1.8s ease}
+    .speed-res{font-size:13px;color:#bfe0d8;display:none}
 
-/* Mobile Menu */
-.mobile-menu{
-  display:none;
-  position:absolute;top:64px;right:0;width:280px;
-  background:oklch(0.10 0.025 280 / 0.95);
-  backdrop-filter:blur(12px);
-  border:1px solid oklch(0.25 0.04 280 / 0.5);
-  border-top:none;
-  border-radius:0 0 12px 12px;
-  padding:12px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.5);
-  z-index:49;
-}
-.mobile-menu.open{display:block}
-.mobile-menu-item{
-  display:flex;align-items:center;gap:12px;
-  padding:12px 16px;border-radius:8px;
-  color:var(--fg);text-decoration:none;
-  font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;
-  transition:all 0.2s;
-  cursor:pointer;
-  border:1px solid transparent;
-}
-.mobile-menu-item:hover{
-  background:oklch(0.20 0.03 280 / 0.5);
-  border-color:oklch(0.72 0.22 195 / 0.3);
-}
-.mobile-menu-item svg{width:18px;height:18px;flex-shrink:0}
-.mobile-menu-item.youtube{color:var(--youtube)}
-.mobile-menu-item.youtube svg{color:var(--youtube)}
+    /* Catalog */
+    .catalog{background:linear-gradient(160deg,#071a22,#0a2730 50%,#07141b)}
+    .search-box{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+    .search{flex:1;min-width:240px;display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--line);background:rgba(3,17,24,.6);border-radius:10px}
+    .search input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:#edf8f4;font-size:13px}
+    .search span{padding-left:10px;border-left:1px solid var(--line);color:var(--teal);font-size:10px;font-weight:800;letter-spacing:.1em}
+    .category-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+    .tab-btn{border:1px solid var(--line);border-radius:8px;background:rgba(255,255,255,.03);padding:9px 15px;color:#cbdbd8;font-size:11px;font-weight:800;transition:.2s}
+    .tab-btn.active{border-color:var(--orange);background:rgba(255,90,31,.18);color:#fff}
+    
+    .library{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:30px}
+    .poster{position:relative;min-height:310px;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#06151b;transition:.3s;display:flex;flex-direction:column;justify-content:flex-end;padding:18px}
+    .poster:hover{transform:translateY(-6px);border-color:rgba(255,145,105,.7);box-shadow:0 20px 40px rgba(0,0,0,.6)}
+    .poster-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:.4s;filter:brightness(.75)}
+    .poster:hover .poster-bg{transform:scale(1.06);filter:brightness(.9)}
+    .poster-gradient{position:absolute;inset:0;background:linear-gradient(to top,#04090d 0%,rgba(4,9,13,0.5) 55%,transparent 100%)}
+    .poster-content{position:relative;z-index:1}
+    .poster-badges{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+    .badge{display:inline-block;padding:3px 7px;border-radius:4px;font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+    .badge-4k{background:#ff5a1f;color:#fff}
+    .badge-live{background:#ef4444;color:#fff;animation:pulse 1.8s infinite}
+    .badge-hdr{background:#0ea5e9;color:#fff}
+    .badge-epg{background:rgba(155,215,199,0.2);color:var(--teal);border:1px solid rgba(155,215,199,0.4)}
+    .poster h3{margin:4px 0 0;font-family:var(--serif);font-size:22px;line-height:1}
+    .poster p{margin-top:6px;color:#d4e0dd;font-size:11px;line-height:1.4}
 
-@media(max-width:768px){
-  .hamburger-btn{display:flex}
-}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 
-/* ===== HERO ===== */
-.hero{text-align:center;margin-bottom:48px;padding-top:48px}
-@media(min-width:768px){.hero{margin-bottom:64px;padding-top:80px}}
-.hero-badge{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:6px 16px;border-radius:999px;
-  border:1px solid oklch(0.72 0.22 195 / 0.3);
-  background:oklch(0.72 0.22 195 / 0.05);
-  margin-bottom:24px;
-}
-.hero-badge svg{width:14px;height:14px;color:var(--primary)}
-.hero-badge span{font-family:'JetBrains Mono',monospace;font-size:12px;text-transform:uppercase;letter-spacing:0.15em;color:var(--primary)}
-.hero h2{
-  font-family:'Orbitron',sans-serif;
-  font-size:2.5rem;font-weight:900;line-height:1.1;
-  margin-bottom:16px;
-  animation:glitch 3s infinite;
-}
-@media(min-width:768px){.hero h2{font-size:4rem}}
-@keyframes glitch{0%,92%,100%{transform:translate(0)}93%{transform:translate(-1px,1px)}94%{transform:translate(1px,-1px)}95%{transform:translate(-1px,0)}96%{transform:translate(1px,1px)}97%{transform:translate(0,-1px)}}
-.hero p{font-size:1.125rem;color:var(--muted);max-width:640px;margin:0 auto}
-@media(min-width:768px){.hero p{font-size:1.25rem}}
+    /* Compatibility Grid */
+    .compat{background:linear-gradient(130deg,#07151b,#0c2e37 50%,#07161d)}
+    .compat-grid{display:grid;grid-template-columns:.72fr 1.28fr;gap:24px;margin-top:30px}
+    .platform-list{display:grid;gap:8px}
+    .platform{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:10px;background:rgba(4,18,25,.42);padding:13px;color:#cbdbd8;text-align:left;transition:.2s}
+    .platform.active{border-color:rgba(255,131,93,.7);background:rgba(255,90,31,.12);color:#fff}
+    .platform .symbol{display:grid;place-items:center;width:34px;height:34px;border:1px solid currentColor;border-radius:50%;font-size:12px}
+    .platform strong{display:block;font-size:12px}
+    .platform small{display:block;margin-top:3px;color:#94aaa6;font-size:9px;letter-spacing:.1em;text-transform:uppercase}
+    .platform em{margin-left:auto;font-style:normal}
+    .platform-detail{border:1px solid var(--line);border-radius:14px;background:linear-gradient(145deg,rgba(13,48,55,.86),rgba(6,20,27,.96));padding:clamp(22px,4vw,38px)}
+    .platform-detail h3{margin:12px 0 0;font-family:var(--serif);font-size:38px;letter-spacing:-.05em}
+    .platform-detail>p{margin-top:10px;color:#c6d4d1;font-size:14px;line-height:1.65}
+    .app-tags{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 6px}
+    .app-tag{padding:5px 10px;border-radius:6px;background:rgba(155,215,199,.08);border:1px solid var(--line);color:var(--teal);font-size:10px;font-weight:800}
+    .steps{margin:20px 0 0;padding:0;list-style:none}
+    .steps li{display:grid;grid-template-columns:30px 1fr 18px;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line);color:#d6e2df;font-size:12px;font-weight:700}
+    .steps li span{color:#ff9a76;font-family:monospace;font-size:10px}
 
-/* ===== CARD ===== */
-.clone-card{
-  position:relative;max-width:640px;margin:0 auto;
-  padding:24px;border-radius:16px;
-  background:oklch(0.12 0.025 280 / 0.8);
-  backdrop-filter:blur(16px);
-  border:1px solid oklch(0.25 0.04 280 / 0.6);
-  box-shadow:0 0 0 1px oklch(0.72 0.22 195 / 0.3),0 0 16px oklch(0.72 0.22 195 / 0.15);
-  overflow:hidden;
-}
-@media(min-width:768px){.clone-card{padding:32px}}
-.corner-tl{position:absolute;top:0;left:0;width:64px;height:64px;border-top:2px solid oklch(0.72 0.22 195 / 0.4);border-left:2px solid oklch(0.72 0.22 195 / 0.4);border-top-left-radius:16px}
-.corner-br{position:absolute;bottom:0;right:0;width:64px;height:64px;border-bottom:2px solid oklch(0.72 0.22 195 / 0.4);border-right:2px solid oklch(0.72 0.22 195 / 0.4);border-bottom-right-radius:16px}
-.card-header{display:flex;align-items:center;gap:12px;margin-bottom:24px}
-.card-header .bar{width:4px;height:32px;background:var(--primary);border-radius:999px;box-shadow:0 0 24px oklch(0.72 0.22 195 / 0.25),0 0 48px oklch(0.72 0.22 195 / 0.1)}
-.card-header h3{font-family:'Orbitron',sans-serif;font-size:1.125rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em}
-.card-header p{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-top:2px}
+    /* Screen Selector & Plans */
+    .screen-toggle{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:30px;background:rgba(3,17,24,.6);padding:6px;border-radius:12px;border:1px solid var(--line);width:fit-content;margin-left:auto;margin-right:auto}
+    .screen-btn{border:0;background:none;color:#94aaa6;padding:8px 16px;border-radius:8px;font-size:11px;font-weight:800;transition:.2s}
+    .screen-btn.active{background:var(--orange);color:#1e0903}
+    .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}
+    .plan{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:16px;background:linear-gradient(160deg,rgba(15,39,47,.96),rgba(6,20,27,.98));padding:28px;position:relative}
+    .plan.featured{border-color:rgba(255,118,76,.75);background:linear-gradient(160deg,rgba(72,44,35,.94),rgba(10,33,39,.98));box-shadow:0 20px 60px rgba(255,90,31,.14)}
+    .plan-badge{position:absolute;top:-12px;right:20px;background:var(--orange);color:#fff;font-size:9px;font-weight:800;padding:4px 10px;border-radius:999px;letter-spacing:.08em}
+    .plan-tag{color:var(--teal);font-size:10px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
+    .price{margin-top:17px;font-size:42px;font-weight:800;letter-spacing:-.06em}
+    .price small{font-size:14px;color:#94aaa6;font-weight:600}
+    .plan p{min-height:40px;margin-top:10px;color:#b8c6c5;font-size:12px;line-height:1.55}
+    .plan ul{margin:21px 0;padding:19px 0 0;border-top:1px solid var(--line);list-style:none;color:#d9e4e1;font-size:11px;line-height:2}
+    .plan li:before{content:"✓";margin-right:9px;color:var(--teal);font-weight:900}
+    .plan .button{margin-top:auto}
 
-/* ===== FORM ===== */
-.form-group{margin-bottom:20px}
-.form-label{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;margin-bottom:8px;font-family:'Rajdhani',sans-serif}
-.form-label svg{width:16px;height:16px;color:var(--primary)}
-.input-wrap{position:relative}
-.form-input{
-  width:100%;padding:10px 16px;
-  font-family:'JetBrains Mono',monospace;font-size:14px;
-  background:oklch(0.20 0.03 280 / 0.5);
-  border:1px solid oklch(0.25 0.04 280 / 0.6);
-  border-radius:8px;color:var(--fg);
-  outline:none;transition:border-color 0.2s;
-}
-.form-input:focus{border-color:oklch(0.72 0.22 195 / 0.6)}
-.form-input:disabled{opacity:0.5;cursor:not-allowed}
-.form-input::placeholder{color:oklch(0.62 0.01 250 / 0.5)}
-.toggle-btn{
-  position:absolute;right:12px;top:50%;transform:translateY(-50%);
-  background:none;border:none;cursor:pointer;
-  font-family:'JetBrains Mono',monospace;font-size:12px;
-  color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;
-  transition:color 0.2s;
-}
-.toggle-btn:hover{color:var(--primary)}
-.form-hint{font-size:12px;color:oklch(0.62 0.01 250 / 0.7);margin-top:6px;font-family:'Rajdhani',sans-serif}
-.arrow-down{display:flex;justify-content:center;margin:-4px 0}
-.arrow-down svg{width:24px;height:24px;color:oklch(0.72 0.22 195 / 0.5);transform:rotate(90deg)}
+    /* FAQ */
+    .faq{display:grid;grid-template-columns:.75fr 1.25fr;gap:48px}
+    .faq-list{border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .faq-list details{border-bottom:1px solid var(--line)}
+    .faq-list details:last-child{border:0}
+    .faq-list summary{padding:18px 0;color:#f0ece6;font-size:14px;font-weight:800;cursor:pointer}
+    .faq-list p{padding:0 0 18px;color:#bbc9c7;font-size:13px;line-height:1.65}
 
-/* ===== BUTTON ===== */
-.btn{
-  width:100%;height:48px;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;
-  text-transform:uppercase;letter-spacing:0.05em;
-  border:none;border-radius:8px;cursor:pointer;
-  transition:all 0.2s;
-}
-.btn:active{transform:scale(0.98)}
-.btn-primary{
-  background:var(--primary);color:var(--primary-fg);
-  box-shadow:0 0 24px oklch(0.72 0.22 195 / 0.25),0 0 48px oklch(0.72 0.22 195 / 0.1);
-}
-.btn-primary:hover{background:oklch(0.72 0.22 195 / 0.9)}
-.btn-primary:disabled{opacity:0.6;cursor:not-allowed}
-.btn-outline{
-  background:transparent;color:var(--fg);
-  border:1px solid oklch(0.72 0.22 195 / 0.4);
-}
-.btn-outline:hover{background:oklch(0.72 0.22 195 / 0.1)}
-.btn svg{width:20px;height:20px}
+    /* Toast Notification */
+    .toast{position:fixed;bottom:24px;left:24px;z-index:40;background:rgba(9,30,38,.94);border:1px solid var(--line);backdrop-filter:blur(12px);border-radius:12px;padding:12px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 15px 40px rgba(0,0,0,.5);transform:translateY(120px);opacity:0;transition:.4s}
+    .toast.show{transform:translateY(0);opacity:1}
+    .toast-dot{width:10px;height:10px;border-radius:50%;background:#10b981;box-shadow:0 0 10px #10b981}
+    .toast b{display:block;font-size:11px;color:#fff}
+    .toast small{font-size:9px;color:var(--muted)}
 
-/* ===== PROGRESS ===== */
-.progress-card{
-  max-width:640px;margin:24px auto 0;
-  padding:24px;border-radius:16px;
-  background:oklch(0.12 0.025 280 / 0.8);
-  backdrop-filter:blur(16px);
-  border:1px solid oklch(0.25 0.04 280 / 0.6);
-  overflow:hidden;position:relative;
-}
-@media(min-width:768px){.progress-card{padding:32px}}
-.progress-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
-.progress-header-left{display:flex;align-items:center;gap:12px}
-.progress-header-left .bar{width:4px;height:32px;background:var(--primary);border-radius:999px;box-shadow:0 0 24px oklch(0.72 0.22 195 / 0.25)}
-.progress-header h3{font-family:'Orbitron',sans-serif;font-size:1.125rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em}
-.progress-header p{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-top:2px}
-.status-badge{display:flex;align-items:center;gap:8px;padding:4px 12px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:12px;text-transform:uppercase;letter-spacing:0.05em}
-.status-badge.running{background:oklch(0.72 0.22 195 / 0.1);border:1px solid oklch(0.72 0.22 195 / 0.3)}
-.status-badge.running span{color:var(--primary)}
-.status-badge.success{background:oklch(0.74 0.2 145 / 0.1);border:1px solid oklch(0.74 0.2 145 / 0.3)}
-.status-badge.success span{color:var(--green)}
-.status-badge.error{background:oklch(0.65 0.25 15 / 0.1);border:1px solid oklch(0.65 0.25 15 / 0.3)}
-.status-badge.error span{color:var(--destructive)}
-.status-dot{width:8px;height:8px;border-radius:50%}
-.status-dot.running{background:var(--primary);animation:pulse-ring 1.5s infinite}
-.status-dot.success{background:var(--green)}
-.status-dot.error{background:var(--destructive)}
-.progress-message{
-  margin-bottom:24px;padding:12px 16px;border-radius:8px;
-  background:oklch(0.20 0.03 280 / 0.3);
-  border:1px solid oklch(0.25 0.04 280 / 0.4);
-  font-size:14px;display:flex;align-items:flex-start;gap:8px;
-}
-.spinner{width:16px;height:16px;border:2px solid transparent;border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0;margin-top:2px}
-@keyframes spin{to{transform:rotate(360deg)}}
-.step-list{display:flex;flex-direction:column;gap:8px}
-.step-item{
-  display:flex;align-items:center;gap:12px;
-  padding:12px 16px;border-radius:8px;
-  border:1px solid;transition:all 0.3s;
-}
-.step-item.pending{border-color:oklch(0.25 0.04 280 / 0.3);opacity:0.5}
-.step-item.running{border-color:oklch(0.72 0.22 195 / 0.3);background:oklch(0.72 0.22 195 / 0.05)}
-.step-item.done{border-color:oklch(0.74 0.2 145 / 0.2);background:oklch(0.74 0.2 145 / 0.05)}
-.step-item.error{border-color:oklch(0.65 0.25 15 / 0.3);background:oklch(0.65 0.25 15 / 0.05)}
-.step-icon{width:20px;height:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-.step-icon.pending{width:20px;height:20px;border-radius:50%;border:2px solid oklch(0.62 0.01 250 / 0.3)}
-.step-icon.running svg{width:20px;height:20px;color:var(--primary);animation:spin 0.8s linear infinite}
-.step-icon.done svg{width:20px;height:20px;color:var(--green)}
-.step-icon.error svg{width:20px;height:20px;color:var(--destructive)}
-.step-label{flex:1;font-size:14px;font-weight:500;font-family:'Rajdhani',sans-serif}
-.step-detail{font-size:12px;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace}
-.step-num{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:oklch(0.62 0.01 250 / 0.5)}
-.alert-box{margin-top:24px;padding:16px;border-radius:8px;display:flex;align-items:flex-start;gap:12px}
-.alert-box.error{background:oklch(0.65 0.25 15 / 0.1);border:1px solid oklch(0.65 0.25 15 / 0.3)}
-.alert-box.success{background:oklch(0.74 0.2 145 / 0.1);border:1px solid oklch(0.74 0.2 145 / 0.3)}
-.alert-box svg{width:20px;height:20px;flex-shrink:0;margin-top:2px}
-.alert-box.error svg{color:var(--destructive)}
-.alert-box.success svg{color:var(--green)}
-.alert-title{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px}
-.alert-box.error .alert-title{color:var(--destructive)}
-.alert-box.success .alert-title{color:var(--green)}
-.alert-msg{font-size:14px;color:oklch(0.92 0.01 250 / 0.8);font-family:'Rajdhani',sans-serif}
+    /* Modals & Drawers */
+    .modal{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.8);backdrop-filter:blur(8px)}
+    .modal.open{display:flex}
+    .modal-card{width:min(860px,100%);max-height:88vh;overflow:auto;border:1px solid rgba(247,212,190,.23);border-radius:16px;background:#0c1520;box-shadow:0 24px 120px rgba(0,0,0,.7)}
+    .modal-head{position:relative;overflow:hidden;padding:26px 30px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,rgba(255,90,31,.16),transparent 55%),#0c1924}
+    .modal-head h3{margin:8px 0 0;font-family:var(--serif);font-size:36px;letter-spacing:-.05em}
+    .modal-head p{max-width:590px;margin-top:6px;color:#c8d4d4;font-size:12px;line-height:1.6}
+    .close{position:absolute;right:16px;top:16px;width:38px;height:38px;border:1px solid var(--line);border-radius:8px;background:rgba(7,21,27,.68);color:white}
+    .modal-body{padding:26px 30px}
+    .field-title{margin:0 0 10px;color:#ffad8d;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+    .choices{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .choice{border:1px solid var(--line);border-radius:10px;background:rgba(183,221,207,.04);padding:12px;color:#bfe0d9;text-align:left;transition:.2s}
+    .choice.active{border-color:#ff8056;background:rgba(255,90,31,.12)}
+    .choice b{display:block;margin-top:8px;color:#f1f8f4;font-size:12px}
+    .choice small{display:block;margin-top:4px;color:#9fb4b1;font-size:9px;line-height:1.4}
+    .fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px;border-top:1px solid var(--line);padding-top:20px}
+    .field label{display:block;margin-bottom:7px;color:#ffad8d;font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+    .field input,.field select{width:100%;border:1px solid var(--line);border-radius:8px;background:rgba(183,221,207,.05);padding:12px;color:#eaf5f0;font-size:12px}
+    .install,.content{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+    .install button,.content button{display:flex;align-items:flex-start;gap:10px;border:1px solid var(--line);border-radius:10px;background:rgba(183,221,207,.04);padding:12px;color:#bfe0d9;text-align:left}
+    .install button.active,.content button.active{border-color:#ff8056;background:rgba(255,90,31,.12)}
+    .install b,.content b{display:block;color:#f1f8f4;font-size:12px}
+    .install small,.content small{display:block;margin-top:4px;color:#9fb4b1;font-size:9px;line-height:1.4}
+    .age{display:grid;place-items:center;min-width:25px;height:25px;border:1px solid #ff9a76;border-radius:50%;color:#ff9a76;font-size:9px;font-weight:800}
+    .confirmation{display:none;gap:9px;margin-top:9px;padding:11px;border-left:2px solid #ff7c54;background:rgba(255,90,31,.08);color:#d6e2df;font-size:11px;line-height:1.5}
+    .confirmation.show{display:flex}
+    .confirmation input{accent-color:var(--orange)}
+    .modal-foot{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:23px;padding-top:18px;border-top:1px solid var(--line)}
+    .modal-foot p{max-width:430px;color:#aebfc0;font-size:10px;line-height:1.55}
 
-/* ===== FEATURES ===== */
-.features{max-width:1024px;margin:80px auto 0;display:grid;grid-template-columns:1fr;gap:24px}
-@media(min-width:768px){.features{grid-template-columns:repeat(3,1fr)}}
-.feature-card{
-  padding:24px;border-radius:12px;
-  background:oklch(0.12 0.025 280 / 0.4);
-  border:1px solid oklch(0.25 0.04 280 / 0.4);
-  backdrop-filter:blur(8px);
-  transition:border-color 0.3s;
-}
-.feature-card:hover{border-color:oklch(0.72 0.22 195 / 0.3)}
-.feature-icon{
-  width:48px;height:48px;border-radius:8px;
-  background:oklch(0.72 0.22 195 / 0.1);
-  display:flex;align-items:center;justify-content:center;
-  color:var(--primary);margin-bottom:16px;
-}
-.feature-icon svg{width:24px;height:24px}
-.feature-card h4{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px}
-.feature-card p{font-size:14px;color:var(--muted);font-family:'Rajdhani',sans-serif}
+    .footer{border-top:1px solid var(--line);padding:34px 0;background:#050d13}
+    .footer-inner{display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .float-test{position:fixed;right:20px;bottom:20px;z-index:30}
+    .back-top{position:fixed;right:20px;bottom:78px;z-index:30;display:none;width:42px;height:42px;border:1px solid rgba(155,215,199,.45);border-radius:10px;background:rgba(7,25,32,.88);color:#bce7dd}
 
-/* ===== REQUIREMENTS ===== */
-.requirements{max-width:640px;margin:48px auto 0;padding:20px;border-radius:12px;background:oklch(0.12 0.025 280 / 0.4);border:1px solid oklch(0.25 0.04 280 / 0.4);backdrop-filter:blur(8px)}
-.requirements h4{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--primary);margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.requirements h4 svg{width:16px;height:16px}
-.requirements ul{list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--muted);font-family:'Rajdhani',sans-serif}
-.requirements li{display:flex;align-items:flex-start;gap:8px}
-.requirements li span{color:var(--primary);margin-top:2px}
+    .drawer{position:fixed;inset:0;z-index:50;display:none;background:rgba(0,0,0,.75);backdrop-filter:blur(7px)}
+    .drawer.open{display:block}
+    .drawer-panel{margin-left:auto;display:flex;flex-direction:column;width:min(360px,100%);height:100%;padding:22px;background:#08151e;border-left:1px solid var(--line)}
+    .drawer-close{margin-left:auto;width:40px;height:40px;border:1px solid var(--line);border-radius:8px;background:transparent;color:white}
+    .drawer-links{display:grid;gap:0;margin-top:38px}
+    .drawer-links a{padding:16px 0;border-bottom:1px solid var(--line);color:#f2f7f2;text-decoration:none;font-size:16px;font-weight:800}
 
-/* ===== FOOTER ===== */
-footer{position:relative;z-index:10;border-top:1px solid oklch(0.25 0.04 280 / 0.5);margin-top:48px}
-footer p{text-align:center;padding:24px 0;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em}
-
-/* ===== TOAST ===== */
-.toast-container{position:fixed;top:20px;right:20px;z-index:100;display:flex;flex-direction:column;gap:8px;max-width:380px}
-.toast{
-  padding:12px 16px;border-radius:8px;
-  background:oklch(0.12 0.025 280 / 0.95);
-  backdrop-filter:blur(16px);
-  border:1px solid oklch(0.25 0.04 280 / 0.6);
-  font-size:14px;font-family:'Rajdhani',sans-serif;
-  animation:toast-in 0.3s ease-out;
-  display:flex;flex-direction:column;gap:4px;
-}
-@keyframes toast-in{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
-.toast.success{border-color:oklch(0.74 0.2 145 / 0.4)}
-.toast.error{border-color:oklch(0.65 0.25 15 / 0.4)}
-.toast-title{font-weight:700;font-size:14px}
-.toast.success .toast-title{color:var(--green)}
-.toast.error .toast-title{color:var(--destructive)}
-.toast-desc{font-size:13px;color:var(--muted)}
-
-/* ===== API CONFIG ===== */
-.api-config{
-  max-width:640px;margin:24px auto 0;
-  padding:16px 20px;border-radius:12px;
-  background:oklch(0.12 0.025 280 / 0.4);
-  border:1px solid oklch(0.25 0.04 280 / 0.4);
-}
-.api-config label{font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px}
-.api-config input{width:100%;padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:13px;background:oklch(0.20 0.03 280 / 0.5);border:1px solid oklch(0.25 0.04 280 / 0.6);border-radius:6px;color:var(--fg);outline:none}
-.api-config input:focus{border-color:oklch(0.72 0.22 195 / 0.6)}
-.api-config p{font-size:12px;color:oklch(0.62 0.01 250 / 0.6);margin-top:6px;font-family:'Rajdhani',sans-serif}
-</style>
+    @media(max-width:900px){
+      .hero-grid,.section-head,.faq,.compat-grid,.speed-widget{grid-template-columns:1fr}
+      .hero{padding-top:62px}
+      .nav-links{display:none}
+      .hamburger{display:block}
+      .library{grid-template-columns:repeat(2,1fr)}
+      .plans{grid-template-columns:1fr}
+      .choices{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:560px){
+      .library{grid-template-columns:1fr}
+      .choices,.fields,.install,.content{grid-template-columns:1fr}
+      .modal-head,.modal-body{padding:20px 16px}
+      .modal-foot{flex-direction:column;align-items:stretch}
+      .hero-actions .button{width:100%}
+    }
+  </style>
 </head>
 <body>
-<div class="grid-bg"></div>
-<div class="scanline-bg"></div>
-<div class="radial-bg"></div>
+  <div class="notice">⚡ Servidores CDN Anti-Freeze · Transmissões 4K/FHD sem atrasos · Suporte Imediato</div>
 
-<!-- Toast container -->
-<div class="toast-container" id="toastContainer"></div>
-
-<!-- Navigation -->
-<nav>
-  <div class="container nav-inner">
-    <div class="nav-logo">
-      <div class="logo-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-        <div class="logo-dot"></div>
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="#inicio">
+        <div class="brand-icon">▶</div>
+        <span><b>IPTV BRASIL</b><small>VIP & ULTRA 4K</small></span>
+      </a>
+      <div class="nav-links">
+        <a href="#catalogo">Catálogo & EPG</a>
+        <a href="#velocidade">Teste de Conexão</a>
+        <a href="#compatibilidade">Dispositivos & Apps</a>
+        <a href="#planos">Planos</a>
+        <a href="#duvidas">Dúvidas</a>
       </div>
-      <div class="logo-text">
-        <h1 class="neon-text">DEEXTER<span style="color:var(--primary)">CLONE</span></h1>
-        <p>Server Cloner v3.0</p>
-      </div>
+      <button class="button" onclick="openAccess('teste')">Solicitar teste VIP →</button>
+      <button class="hamburger" onclick="openMenu()" aria-label="Menu">☰</button>
     </div>
-    <div class="nav-status">
-      <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Seguro</span>
-      <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Rápido</span>
-      <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg> Tempo Real</span>
-    </div>
-    <div class="nav-actions">
-      <button class="hamburger-btn" id="hamburgerBtn">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
-      </button>
-      <div class="mobile-menu" id="mobileMenu">
-        <a href="https://youtube.com/@apelawar_yt" target="_blank" class="mobile-menu-item youtube">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-          <span>Criador</span>
-        </a>
-      </div>
-    </div>
-  </div>
-</nav>
+  </nav>
 
-<!-- Main content -->
-<main class="container" style="position:relative;z-index:10;padding-top:48px;padding-bottom:48px">
-  <!-- Hero -->
-  <div class="hero">
-    <div class="hero-badge">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3z"/></svg>
-      <span>Clonagem Profissional Discord</span>
-    </div>
-    <h2>
-      <span class="neon-text">Clone Seu</span> <span style="color:var(--primary)" class="neon-text">Servidor</span><br>
-      <span class="neon-text-purple">em Segundos</span>
-    </h2>
-    <p>Copie cargos, canais, categorias, emojis e permissões de um servidor Discord para outro com precisão total. Rápido, seguro e em tempo real.</p>
-  </div>
-
-  <!-- API Config -->
-  <div class="api-config">
-    <label>URL do Backend (API tRPC)</label>
-    <input type="text" id="apiUrl" placeholder="https://seu-site.manus.space" value="" />
-    <p>Defina a URL do backend publicado. Se vazio, usará a URL atual do site.</p>
-  </div>
-
-  <!-- Clone panel -->
-  <div class="clone-card">
-    <div class="corner-tl"></div>
-    <div class="corner-br"></div>
-    <div class="card-header">
-      <div class="bar"></div>
-      <div>
-        <h3>Painel de Clonagem</h3>
-        <p>Preencha todos os campos para iniciar</p>
+  <main id="inicio">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">A melhor grade de canais & streaming</div>
+          <h1>Futebol ao vivo, filmes e séries em <em>qualidade 4K.</em></h1>
+          <p class="hero-copy">Grade completa com Premiere, Champions, canais abertos/fechados, lançamentos do cinema e replay de até 7 dias. Sem fidelidade.</p>
+          <div class="hero-actions">
+            <button class="button" onclick="openAccess('teste')">▶ Solicitar teste grátis (4 Horas)</button>
+            <button class="button secondary" onclick="openAccess('planos')">Ver planos de acesso ↘</button>
+          </div>
+          <div class="trust">
+            <span>Anti-Freeze (Sem Travamentos)</span>
+            <span>Grade EPG Atualizada</span>
+            <span>Áudio 5.1 & HDR</span>
+          </div>
+        </div>
+        <div class="hero-media">
+          <div class="hero-preview-grid">
+            <div class="hero-box">
+              <span>FUTEBOL AO VIVO</span>
+              <b>Premiere & Libertadores</b>
+              <p>Transmissões 60FPS sem delay</p>
+            </div>
+            <div class="hero-box">
+              <span>STREAMING VIP</span>
+              <b>Filmes & Séries On-Demand</b>
+              <p>+80.000 títulos atualizados</p>
+            </div>
+            <div class="hero-box">
+              <span>INFANTIL & ANIMES</span>
+              <b>Canais 24h & Desenhos</b>
+              <p>Controle parental inteligente</p>
+            </div>
+            <div class="hero-box">
+              <span>REPLAY 7 DIAS</span>
+              <b>Gravação Automática</b>
+              <p>Assista aos programas passados</p>
+            </div>
+          </div>
+          <div class="hero-stat">
+            <div><small>Estabilidade</small><b>99.9% Uptime CDN</b></div>
+            <div><small>Resolução</small><b>SD / HD / FHD / 4K</b></div>
+          </div>
+        </div>
       </div>
+    </section>
+
+    <!-- Speed Test Widget -->
+    <section id="velocidade" class="section" style="background:rgba(3,17,24,.4);padding:60px 0;">
+      <div class="container">
+        <div class="speed-widget">
+          <div>
+            <div class="eyebrow">Diagnóstico de Rede</div>
+            <h2 style="font-size:28px;margin:8px 0;">Sua internet é compatível com 4K?</h2>
+            <p style="color:#b8c8c6;font-size:13px;line-height:1.6;">Verifique se a sua conexão atual possui largura de banda e latência ideais para streaming de altíssima definição sem congelamento.</p>
+            <div class="speed-bar-wrap"><div class="speed-bar" id="speedBar"></div></div>
+            <div class="speed-res" id="speedRes">✅ <strong>Conexão Excelente!</strong> Velocidade detectada acima de <strong>35 Mbps</strong>. Compatível com até 3 telas 4K simultâneas.</div>
+          </div>
+          <div style="text-align:center;">
+            <button class="button secondary" id="btnTestSpeed" onclick="runSpeedTest()" style="width:100%;max-width:280px;padding:16px;">⚡ Iniciar Checagem de Conexão</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Catalog -->
+    <section id="catalogo" class="section catalog">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Catálogo Dinâmico & Canais</div>
+            <h2>O que você quer assistir hoje?</h2>
+          </div>
+          <div>
+            <div class="search-box">
+              <label class="search">
+                ⌕ <input id="search" oninput="renderCatalog()" placeholder="Busque por canais, times, filmes ou gêneros..." />
+                <span id="count">0 DISPONÍVEIS</span>
+              </label>
+            </div>
+            <div class="category-tabs" id="categoryTabs"></div>
+          </div>
+        </div>
+
+        <div class="library" id="library"></div>
+        <p class="catalog-note" style="margin-top:24px;color:#8aa09b;font-size:11px;">* Todos os canais contam com EPG integrado e áudio original/dublado selecionável no aplicativo.</p>
+      </div>
+    </section>
+
+    <!-- Devices & Apps -->
+    <section id="compatibilidade" class="section compat">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Instalação e Aplicativos</div>
+            <h2>Compatível com qualquer tela.</h2>
+          </div>
+          <p class="section-intro">Selecione seu aparelho e descubra os aplicativos oficiais recomendados para máxima estabilidade.</p>
+        </div>
+        <div class="compat-grid">
+          <div class="platform-list" id="platforms"></div>
+          <article class="platform-detail" id="platform-detail"></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Plans & Screen Upsell -->
+    <section id="planos" class="section">
+      <div class="container">
+        <div class="section-head" style="text-align:center;display:block;">
+          <div class="eyebrow" style="justify-content:center;">Planos Flexíveis</div>
+          <h2>Escolha a melhor duração para sua casa.</h2>
+          <p class="section-intro" style="margin:12px auto 0;">Sem contratos ou multas. Escolha a quantidade de acessos simultâneos.</p>
+          
+          <div class="screen-toggle">
+            <span style="font-size:11px;font-weight:800;color:#d7eee8;margin-right:6px;">Telas Simultâneas:</span>
+            <button class="screen-btn active" onclick="setScreens(1)">1 Tela</button>
+            <button class="screen-btn" onclick="setScreens(2)">2 Telas (+R$ 10)</button>
+            <button class="screen-btn" onclick="setScreens(3)">3 Telas (+R$ 18)</button>
+          </div>
+        </div>
+
+        <div class="plans" id="plans"></div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="duvidas" class="section">
+      <div class="container faq">
+        <div>
+          <div class="eyebrow">Dúvidas Frequentes</div>
+          <h2>Tudo o que você precisa saber.</h2>
+          <p class="section-intro" style="margin-top:20px">Não encontrou sua resposta? Nosso time de especialistas está pronto para tirar dúvidas no WhatsApp.</p>
+          <button class="button secondary" style="margin-top:20px" onclick="openAccess('teste')">Falar com Suporte</button>
+        </div>
+        <div class="faq-list">
+          <details open>
+            <summary>Como funciona o teste grátis?</summary>
+            <p>Você preenche o modelo da sua TV/celular no modal guiado e nosso WhatsApp gera instantaneamente os dados de login de teste sem nenhum custo por 4 horas.</p>
+          </details>
+          <details>
+            <summary>Preciso de internet muito rápida?</summary>
+            <p>Recomendamos pelo menos 15 Mbps para conteúdos em Full HD e 30 Mbps para transmissões 4K. Nossos servidores usam compressão H.265 para gastar menos dados.</p>
+          </details>
+          <details>
+            <summary>Posso assistir em mais de um aparelho ao mesmo tempo?</summary>
+            <p>Sim! Você pode escolher planos com 1, 2 ou 3 telas simultâneas pelo seletor de planos no topo.</p>
+          </details>
+          <details>
+            <summary>Como funciona a opção +18 (Conteúdo Adulto)?</summary>
+            <p>Você decide se quer incluir ou não a categoria adulta no seu login. A ativação é protegida por senha/PIN no próprio aplicativo.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <a class="brand" href="#inicio">
+        <div class="brand-icon" style="width:30px;height:30px;font-size:12px;">▶</div>
+        <span><b>IPTV BRASIL VIP</b><small>ALTA DEFINIÇÃO</small></span>
+      </a>
+      <p style="color:#8aa09b;font-size:10px;letter-spacing:.1em;text-transform:uppercase">Tecnologia H.265 Anti-Freeze · 2026</p>
     </div>
+  </footer>
+
+  <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Topo">↑</button>
+  <button class="button float-test" onclick="openAccess('teste')">⚡ Teste VIP 4H</button>
+
+  <!-- Live Toast Notification -->
+  <div class="toast" id="toast">
+    <div class="toast-dot"></div>
     <div>
-      <!-- Token -->
-      <div class="form-group">
-        <label class="form-label" for="token">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
-          Token da Conta Discord
-        </label>
-        <div class="input-wrap">
-          <input type="password" id="token" class="form-input" placeholder="Cole aqui o token da sua conta..." disabled />
-          <button type="button" class="toggle-btn" id="toggleToken">Mostrar</button>
+      <b id="toastUser">Lucas M. de Curitiba</b>
+      <small id="toastAction">Ativou teste para Samsung TV há 2 min</small>
+    </div>
+  </div>
+
+  <!-- Mobile Drawer -->
+  <div class="drawer" id="drawer">
+    <div class="drawer-panel">
+      <button class="drawer-close" onclick="closeMenu()">×</button>
+      <div class="drawer-links">
+        <a href="#catalogo" onclick="closeMenu()">01 · Catálogo & Canais</a>
+        <a href="#velocidade" onclick="closeMenu()">02 · Teste de Velocidade</a>
+        <a href="#compatibilidade" onclick="closeMenu()">03 · Aplicativos & TVs</a>
+        <a href="#planos" onclick="closeMenu()">04 · Planos e Telas</a>
+        <a href="#duvidas" onclick="closeMenu()">05 · Dúvidas Frequentes</a>
+      </div>
+      <div style="margin-top:auto;display:grid;gap:10px;">
+        <button class="button" onclick="closeMenu();openAccess('teste')">Solicitar Teste</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Guiado -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true">
+      <div class="modal-head">
+        <button class="close" onclick="closeAccess()">×</button>
+        <div class="eyebrow" id="modalEyebrow">Configuração Guiada</div>
+        <h3 id="modalTitle">Preparar seu acesso VIP.</h3>
+        <p id="modalText">Informe os detalhes para nossa equipe enviar os dados de conexão adequados para seu aplicativo.</p>
+      </div>
+      <div class="modal-body">
+        <div id="planSelector"></div>
+        <div>
+          <p class="field-title">Selecione seu aparelho principal</p>
+          <div class="choices" id="deviceChoices"></div>
         </div>
-        <p class="form-hint">O token é usado apenas para esta sessão e não é armazenado.</p>
+        <div class="fields">
+          <div class="field">
+            <label id="modelLabel">Modelo do aparelho</label>
+            <input id="model" placeholder="Ex.: TV Box, Smart Samsung, iPhone..." />
+          </div>
+          <div class="field">
+            <label>Aplicativo de preferência</label>
+            <select id="appPref">
+              <option>Recomendação da Equipe</option>
+              <option>IPTV Smarters Pro</option>
+              <option>XCIPTV Player</option>
+              <option>IBO Player / Bob Player</option>
+              <option>SS IPTV / Smart IPTV</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-top:20px">
+          <p class="field-title">O aplicativo já está instalado?</p>
+          <div class="install">
+            <button id="installedYes" onclick="setInstalled('sim')">
+              <span>✓</span>
+              <span><b>Sim, já está instalado</b><small>Avançar para dados de login.</small></span>
+            </button>
+            <button id="installedNo" onclick="setInstalled('nao')">
+              <span>→</span>
+              <span><b>Preciso do link do app</b><small>Receber tutorial de instalação.</small></span>
+            </button>
+          </div>
+        </div>
+        <div style="margin-top:20px">
+          <p class="field-title">Preferência de Conteúdo Adulto</p>
+          <div class="content">
+            <button id="withoutAdult" onclick="setContent('sem')">
+              <span>✓</span>
+              <span><b>Sem canais +18</b><small>Acesso seguro para toda a família.</small></span>
+            </button>
+            <button id="withAdult" onclick="setContent('com')">
+              <span class="age">18+</span>
+              <span><b>Com canais +18</b><small>Protegido por senha padrão.</small></span>
+            </button>
+          </div>
+          <label class="confirmation" id="adultConfirm">
+            <input type="checkbox" id="adultCheck" onchange="validateModal()" />
+            <span>Confirmo ter <strong>18 anos ou mais</strong> e solicito liberação voluntária.</span>
+          </label>
+        </div>
+        <div class="modal-foot">
+          <p>Você será redirecionado para o WhatsApp com tudo pronto para ativação imediata.</p>
+          <button class="button" id="continueButton" onclick="continueWhatsApp()">Ativar no WhatsApp →</button>
+        </div>
       </div>
-      <!-- Source -->
-      <div class="form-group">
-        <label class="form-label" for="sourceId">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="8" x="2" y="2" rx="2"/><path d="M2 12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2"/><path d="M6 18a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2"/></svg>
-          ID do Servidor de Origem
-        </label>
-        <input type="text" id="sourceId" class="form-input" placeholder="Ex: 123456789012345678" disabled />
-        <p class="form-hint">O servidor que será copiado.</p>
-      </div>
-      <!-- Arrow -->
-      <div class="arrow-down">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </div>
-      <!-- Target -->
-      <div class="form-group">
-        <label class="form-label" for="targetId">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2 .9-2 2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-          ID do Servidor Destino
-        </label>
-        <input type="text" id="targetId" class="form-input" placeholder="Ex: 876543210987654321" disabled />
-        <p class="form-hint">O servidor que receberá a cópia.</p>
-      </div>
-      <!-- Button -->
-      <div id="btnContainer">
-        <button class="btn btn-primary" id="cloneBtn" disabled>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          Iniciar Clonagem
+    </div>
+  </div>
+
+  <script>
+    const whatsapp = '5532984660603';
+    let screens = 1;
+    let activeCategory = 'Futebol';
+
+    const catalogItems = [
+      {title:'Premiere FC & Estaduais', category:'Futebol', badges:['AO VIVO','60 FPS','FHD'], desc:'Cobertura completa de todos os jogos da rodada com som de estádio.', img:'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=500&q=80'},
+      {title:'UEFA Champions League', category:'Futebol', badges:['AO VIVO','4K HDR'], desc:'Transmissão em altíssima taxa de bits com narração oficial.', img:'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=500&q=80'},
+      {title:'Combate & UFC Fight Pass', category:'Esportes', badges:['AO VIVO','FHD'], desc:'Todos os cards principais e preliminares sem cortes.', img:'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=500&q=80'},
+      {title:'Cinema Lançamentos 2026', category:'Filmes', badges:['4K ULTRA HD','DOLBY 5.1'], desc:'Últimos sucessos de bilheteria recém saídos do cinema.', img:'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=500&q=80'},
+      {title:'Séries Originais & Streaming', category:'Séries', badges:['TEMPORADAS COMPLETAS','DUBLADO'], desc:'Maratone lançamentos da Netflix, HBO Max, Disney+ e Prime.', img:'https://images.unsplash.com/photo-1578022761797-b8636ac1773c?w=500&q=80'},
+      {title:'Canais 24 Horas & Desenhos', category:'Infantil', badges:['EPG GUIA','DUBLADO'], desc:'Programação segura com canais temáticos dedicados.', img:'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500&q=80'},
+      {title:'Canais Abertos & Notícias', category:'Variedades', badges:['AO VIVO','REPLAY 7D'], desc:'Globo, Record, SBT, Band, CNN Brasil e canais de notícias 24h.', img:'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=500&q=80'},
+      {title:'Fórmula 1 & BandSports', category:'Esportes', badges:['AO VIVO','60 FPS'], desc:'Treinos livres, classificação e corridas ao vivo sem comerciais.', img:'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=500&q=80'}
+    ];
+
+    const platforms = [
+      {label:'Smart TV Samsung', short:'Samsung Tizen', symbol:'▣', type:'tv', apps:['IBO Player','SmartOne IPTV','SS IPTV'], guide:'Instalação direta pela Samsung App Store.', steps:['Abra a loja da Samsung TV e instale o IBO Player ou SS IPTV','Envie o endereço MAC do aplicativo para o suporte','Receba a lista carregada instantaneamente']},
+      {label:'Smart TV LG (WebOS)', short:'LG WebOS', symbol:'▣', type:'tv', apps:['IPTV Smarters Pro','IBO Player','Bob Player'], guide:'Compatível com todas as TVs LG WebOS.', steps:['Pesquise por IPTV Smarters ou IBO Player na LG Content Store','Abra o aplicativo e anote os dados na tela','Envie ao atendimento para ativar em minutos']},
+      {label:'Android TV / TV Box / Fire TV', short:'Android / FireStick', symbol:'▣', type:'box', apps:['XCIPTV','IPTV Smarters Pro','Downloader'], guide:'Máxima performance com players H.265 anti-travamento.', steps:['Baixe nosso aplicativo direto pelo app Downloader','Digite o código fornecido pelo suporte','Insira usuário e senha gerados no teste']},
+      {label:'iPhone / iPad / Apple TV', short:'Apple iOS', symbol:'◯', type:'mobile', apps:['Smarters Lite','GSE Smart IPTV','Snappier'], guide:'Instalação rápida via App Store.', steps:['Baixe o Smarters Lite oficial na App Store','Abra o app e clique em Entrar com API Xtream','Digite os dados de teste enviados pelo WhatsApp']},
+      {label:'Roku TV / Roku Express', short:'Roku OS', symbol:'✦', type:'tv', apps:['Cast Player','IPTV Web Cast'], guide:'Transmissão espelhada com alta resolução.', steps:['Configure o player compatível na loja de canais Roku','Conecte no mesmo Wi-Fi para recepção otimizada','Inicie a transmissão direto com suporte da equipe']}
+    ];
+
+    const basePlans = [
+      {name:'Acesso Mensal', basePrice:20, screenExtra:[0, 10, 18], detail:'Flexibilidade total sem fidelidade.', features:['Grade completa 4K/FHD/SD','Futebol, Esportes e Premiere','Filmes & Séries On Demand','Guia de Programação (EPG)','Suporte WhatsApp 7 dias/sem']},
+      {name:'Acesso Trimestral', basePrice:55, screenExtra:[0, 20, 35], featured:true, badge:'Mais Escolhido', detail:'Economia ideal para acompanhar campeonatos.', features:['Todos os benefícios do Mensal','Servidor Prioritário VIP','Replay de 7 dias habilitado','Economia no valor mensal','Suporte com fila prioritária']},
+      {name:'Acesso Anual', basePrice:130, screenExtra:[0, 45, 80], detail:'Máxima economia e estabilidade contínua.', features:['Acesso completo por 12 meses','Bloqueio contra reajustes','Garantia total de funcionamento','Suporte VIP Dedicado','Acesso antecipado a novidades']}
+    ];
+
+    let activePlatform = platforms[0];
+    let mode = 'teste';
+    let selectedPlan = basePlans[1];
+    let selectedDevice = platforms[0].label;
+    let installed = null;
+    let content = 'sem';
+
+    function renderCatalog(){
+      const q = document.querySelector('#search').value.toLowerCase().trim();
+      const filtered = catalogItems.filter(item => {
+        const matchesCategory = activeCategory === 'Todos' || item.category === activeCategory;
+        const matchesQuery = !q || (item.title + ' ' + item.desc + ' ' + item.category).toLowerCase().includes(q);
+        return matchesCategory && matchesQuery;
+      });
+
+      document.querySelector('#count').textContent = `${filtered.length} DISPONÍVEIS`;
+      document.querySelector('#library').innerHTML = filtered.length ? filtered.map(item => `
+        <article class="poster">
+          <div class="poster-bg" style="background-image:url('${item.img}')"></div>
+          <div class="poster-gradient"></div>
+          <div class="poster-content">
+            <div class="poster-badges">
+              ${item.badges.map(b => `<span class="badge ${b.includes('VIVO')?'badge-live':b.includes('4K')?'badge-4k':'badge-hdr'}">${b}</span>`).join('')}
+              <span class="badge badge-epg">${item.category}</span>
+            </div>
+            <h3>${item.title}</h3>
+            <p>${item.desc}</p>
+          </div>
+        </article>
+      `).join('') : `<p style="grid-column:1/-1;padding:40px;text-align:center;border:1px dashed var(--line);color:var(--muted)">Nenhum canal ou conteúdo encontrado para esta busca.</p>`;
+    }
+
+    function renderTabs(){
+      const categories = ['Futebol','Esportes','Filmes','Séries','Infantil','Variedades','Todos'];
+      document.querySelector('#categoryTabs').innerHTML = categories.map(cat => `
+        <button class="tab-btn ${cat===activeCategory?'active':''}" onclick="activeCategory='${cat}';renderTabs();renderCatalog()">${cat}</button>
+      `).join('');
+    }
+
+    function renderPlatforms(){
+      document.querySelector('#platforms').innerHTML = platforms.map(p => `
+        <button class="platform ${p.label===activePlatform.label?'active':''}" onclick="selectPlatform('${p.label}')">
+          <span class="symbol">${p.symbol}</span>
+          <span><strong>${p.label}</strong><small>${p.short}</small></span>
+          <em>→</em>
         </button>
-      </div>
-    </div>
-  </div>
+      `).join('');
 
-  <!-- Progress panel (hidden until clone starts) -->
-  <div class="progress-card" id="progressCard" style="display:none">
-    <div class="corner-tl"></div>
-    <div class="corner-br"></div>
-    <div class="progress-header">
-      <div class="progress-header-left">
-        <div class="bar"></div>
-        <div>
-          <h3 id="progressTitle">Progresso da Clonagem</h3>
-          <p id="progressServer">Processando...</p>
+      const p = activePlatform;
+      document.querySelector('#platform-detail').innerHTML = `
+        <div class="eyebrow">Dispositivo Selecionado</div>
+        <h3>${p.label}</h3>
+        <p>${p.guide}</p>
+        <div class="app-tags">
+          <span style="font-size:10px;font-weight:800;color:var(--muted);align-self:center;">APPS RECOMENDADOS:</span>
+          ${p.apps.map(a => `<span class="app-tag">⚡ ${a}</span>`).join('')}
         </div>
-      </div>
-      <div id="statusBadge"></div>
-    </div>
-    <div class="progress-message" id="progressMessage"></div>
-    <div class="step-list" id="stepList"></div>
-    <div id="alertBox"></div>
-  </div>
-
-  <!-- Features -->
-  <div class="features">
-    <div class="feature-card">
-      <div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-      <h4>Seguro</h4>
-      <p>Seu token não é armazenado. A clonagem acontece em uma sessão temporária.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
-      <h4>Completo</h4>
-      <p>Copia cargos, emojis, categorias, canais de texto, voz e permissões.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg></div>
-      <h4>Tempo Real</h4>
-      <p>Acompanhe cada etapa da clonagem com atualizações em tempo real.</p>
-    </div>
-  </div>
-
-  <!-- Requirements -->
-  <div class="requirements">
-    <h4><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg> Requisitos</h4>
-    <ul>
-      <li><span>▸</span> A conta precisa estar presente em ambos os servidores (origem e destino).</li>
-      <li><span>▸</span> O token da conta será exigido para autenticação.</li>
-      <li><span>▸</span> Você precisa ter permissões de administrador no servidor destino.</li>
-      <li><span>▸</span> Todos os canais e cargos existentes no servidor destino serão substituídos.</li>
-    </ul>
-  </div>
-</main>
-
-<footer>
-  <div class="container">
-    <p>Deexter Clone v3.0 — Baseado na script DeexterClone3</p>
-  </div>
-</footer>
-
-<script>
-// ===== STATE =====
-let jobId = null;
-let pollTimer = null;
-let isRunning = false;
-let showToken = false;
-
-const IDLE_STATE = {
-  status: "idle",
-  message: "",
-  steps: [],
-  startedAt: null,
-  finishedAt: null,
-  error: null,
-  serverName: null,
-};
-
-let cloneState = { ...IDLE_STATE };
-
-// ===== ICONS (SVG strings) =====
-const ICONS = {
-  check: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
-  x: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
-  alert: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
-  spinner: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>',
-  zap: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
-};
-
-// ===== HAMBURGER MENU =====
-document.getElementById('hamburgerBtn').addEventListener('click', () => {
-  const menu = document.getElementById('mobileMenu');
-  menu.classList.toggle('open');
-});
-
-// Close menu when clicking outside
-document.addEventListener('click', (e) => {
-  const menu = document.getElementById('mobileMenu');
-  const btn = document.getElementById('hamburgerBtn');
-  if (!menu.contains(e.target) && !btn.contains(e.target)) {
-    menu.classList.remove('open');
-  }
-});
-
-// ===== TOAST =====
-function showToast(type, title, desc) {
-  const container = document.getElementById('toastContainer');
-  const toast = document.createElement('div');
-  toast.className = `toast ${type}`;
-  toast.innerHTML = `<div class="toast-title">${title}</div>${desc ? `<div class="toast-desc">${desc}</div>` : ''}`;
-  container.appendChild(toast);
-  setTimeout(() => {
-    toast.style.opacity = '0';
-    toast.style.transform = 'translateX(20px)';
-    toast.style.transition = 'all 0.3s';
-    setTimeout(() => toast.remove(), 300);
-  }, 5000);
-}
-
-// ===== API HELPERS =====
-function getApiBase() {
-  const input = document.getElementById('apiUrl').value.trim();
-  if (input) return input.replace(/\/$/, '');
-  return window.location.origin;
-}
-
-async function trpcRequest(procedure, type, input) {
-  const base = getApiBase();
-  const url = `${base}/api/trpc/${procedure}`;
-  
-  if (type === 'query') {
-    const qs = encodeURIComponent(JSON.stringify(input));
-    const res = await fetch(`${url}?input=${qs}`, {
-      headers: { 'Content-Type': 'application/json' },
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error?.message || `HTTP ${res.status}`);
+        <ol class="steps">
+          ${p.steps.map((s,i) => `<li><span>${String(i+1).padStart(2,'0')}</span><b>${s}</b><i style="color:var(--teal);font-style:normal">✓</i></li>`).join('')}
+        </ol>
+        <div class="hero-actions" style="margin-top:24px;">
+          <button class="button" onclick="openAccess('teste','${p.label}')">Testar no ${p.short} →</button>
+        </div>
+      `;
     }
-    const data = await res.json();
-    if (data.error) throw new Error(data.error.message);
-    return data.result?.data;
-  } else {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ json: input }),
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error?.message || `HTTP ${res.status}`);
+
+    function selectPlatform(label){
+      activePlatform = platforms.find(p => p.label === label);
+      renderPlatforms();
     }
-    const data = await res.json();
-    if (data.error) throw new Error(data.error.message);
-    return data.result?.data;
-  }
-}
 
-// ===== VALIDATION =====
-function validate() {
-  const token = document.getElementById('token').value.trim();
-  const sourceId = document.getElementById('sourceId').value.trim();
-  const targetId = document.getElementById('targetId').value.trim();
+    function setScreens(num){
+      screens = num;
+      document.querySelectorAll('.screen-btn').forEach((btn, idx) => {
+        btn.classList.toggle('active', idx + 1 === num);
+      });
+      renderPlans();
+    }
 
-  if (!token || token.length < 10) {
-    showToast('error', 'Token inválido', 'Insira um token válido da sua conta Discord.');
-    return false;
-  }
-  if (!sourceId || sourceId.length < 17) {
-    showToast('error', 'ID do servidor de origem inválido', 'O ID deve ter pelo menos 17 dígitos.');
-    return false;
-  }
-  if (!targetId || targetId.length < 17) {
-    showToast('error', 'ID do servidor destino inválido', 'O ID deve ter pelo menos 17 dígitos.');
-    return false;
-  }
-  if (sourceId === targetId) {
-    showToast('error', 'Servidores iguais', 'O servidor de origem e destino devem ser diferentes.');
-    return false;
-  }
-  return true;
-}
+    function renderPlans(){
+      document.querySelector('#plans').innerHTML = basePlans.map(p => {
+        const extra = p.screenExtra[screens - 1];
+        const finalPrice = p.basePrice + extra;
+        return `
+          <article class="plan ${p.featured?'featured':''}">
+            ${p.badge ? `<span class="plan-badge">${p.badge}</span>` : ''}
+            <span class="plan-tag">${p.name} · ${screens} ${screens===1?'TELA':'TELAS'}</span>
+            <div class="price">R$ ${finalPrice} <small>/período</small></div>
+            <p>${p.detail}</p>
+            <ul>${p.features.map(f => `<li>${f}</li>`).join('')}</ul>
+            <button class="button ${p.featured?'':'secondary'}" onclick="openAccess('planos',null,'${p.name}')">Contratar ${p.name} →</button>
+          </article>
+        `;
+      }).join('');
+    }
 
-// ===== CLONE FLOW =====
-async function handleClone() {
-  if (!validate()) return;
-  if (isRunning) return;
+    function runSpeedTest(){
+      const btn = document.querySelector('#btnTestSpeed');
+      const bar = document.querySelector('#speedBar');
+      const res = document.querySelector('#speedRes');
+      btn.disabled = true;
+      btn.textContent = 'Avaliando latência e banda...';
+      bar.style.width = '0%';
+      res.style.display = 'none';
 
-  const token = document.getElementById('token').value.trim();
-  const sourceId = document.getElementById('sourceId').value.trim();
-  const targetId = document.getElementById('targetId').value.trim();
+      setTimeout(() => { bar.style.width = '45%'; }, 300);
+      setTimeout(() => { bar.style.width = '85%'; }, 1100);
+      setTimeout(() => {
+        bar.style.width = '100%';
+        res.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = '⚡ Testar Novamente';
+      }, 1900);
+    }
 
-  cloneState = { ...IDLE_STATE };
-  jobId = null;
-  isRunning = true;
-  updateUI();
+    /* Social Proof Toast */
+    const recentActivations = [
+      {user:'Marcos S. (São Paulo)', action:'Ativou Teste 4H para TV Box há 3 min'},
+      {user:'Rafael C. (Belo Horizonte)', action:'Assinou Plano Anual (2 Telas) há 7 min'},
+      {user:'Amanda L. (Rio de Janeiro)', action:'Ativou Teste para LG WebOS há 2 min'},
+      {user:'Bruno T. (Curitiba)', action:'Assinou Trimestral Futebol VIP há 5 min'}
+    ];
+    function triggerToast(){
+      const toast = document.querySelector('#toast');
+      const item = recentActivations[Math.floor(Math.random() * recentActivations.length)];
+      document.querySelector('#toastUser').textContent = item.user;
+      document.querySelector('#toastAction').textContent = item.action;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 5000);
+    }
+    setInterval(triggerToast, 14000);
 
-  try {
-    const result = await trpcRequest('clone.start', 'mutation', {
-      token,
-      sourceGuildId: sourceId,
-      targetGuildId: targetId,
-    });
-    jobId = result.jobId;
-    showToast('success', 'Clonagem iniciada!', 'Acompanhe o progresso em tempo real abaixo.');
-    startPolling();
-  } catch (err) {
-    showToast('error', 'Erro ao iniciar clonagem', err.message);
-    isRunning = false;
-    updateUI();
-  }
-}
+    /* Modal Navigation */
+    function openMenu(){ document.querySelector('#drawer').classList.add('open'); }
+    function closeMenu(){ document.querySelector('#drawer').classList.remove('open'); }
+    function closeAccess(){
+      document.querySelector('#modal').classList.remove('open');
+      document.querySelector('#modal').setAttribute('aria-hidden','true');
+    }
 
-function startPolling() {
-  if (pollTimer) clearInterval(pollTimer);
-  pollTimer = setInterval(async () => {
-    if (!jobId) return;
-    try {
-      const data = await trpcRequest('clone.status', 'query', { jobId });
-      cloneState = data;
-      updateUI();
+    function openAccess(nextMode='teste', device=null, planName=null){
+      mode = nextMode;
+      if(device) selectedDevice = device;
+      if(planName) selectedPlan = basePlans.find(p => p.name === planName);
+      installed = null;
+      content = 'sem';
+      document.querySelector('#adultCheck').checked = false;
+      document.querySelector('#modal').classList.add('open');
+      document.querySelector('#modal').setAttribute('aria-hidden','false');
+      
+      document.querySelector('#modalEyebrow').textContent = mode === 'teste' ? '⚡ TESTE VIP GRATUITO (4 HORAS)' : 'ASSINATURA DE PLANO VIP';
+      document.querySelector('#modalTitle').textContent = mode === 'teste' ? 'Vamos configurar o seu teste.' : 'Finalizar sua assinatura.';
+      renderModal();
+    }
 
-      if (data.status === 'success') {
-        showToast('success', 'Servidor clonado com sucesso!', data.serverName ? `"${data.serverName}" foi clonado.` : undefined);
-        stopPolling();
-      } else if (data.status === 'error') {
-        showToast('error', 'Erro na clonagem', data.error || data.message);
-        stopPolling();
+    function renderModal(){
+      document.querySelector('#planSelector').innerHTML = mode === 'planos' ? `
+        <div style="margin-bottom:20px">
+          <p class="field-title">Duração Escolhida</p>
+          <div class="choices">
+            ${basePlans.map(p => `
+              <button class="choice ${p.name===selectedPlan.name?'active':''}" onclick="selectedPlan=basePlans.find(x=>x.name==='${p.name}');renderModal()">
+                <b>${p.name}</b>
+                <small>R$ ${p.basePrice + p.screenExtra[screens-1]} (${screens} ${screens===1?'tela':'telas'})</small>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      ` : '';
+
+      document.querySelector('#deviceChoices').innerHTML = platforms.map(p => `
+        <button class="choice ${p.label===selectedDevice?'active':''}" onclick="selectedDevice='${p.label}';renderModal()">
+          <span>${p.symbol}</span>
+          <b>${p.label}</b>
+          <small>${p.short}</small>
+        </button>
+      `).join('');
+
+      const d = platforms.find(p => p.label === selectedDevice) || platforms[0];
+      document.querySelector('#modelLabel').textContent = d.type === 'tv' ? 'Marca e Modelo da TV' : 'Modelo do Aparelho';
+      document.querySelector('#model').placeholder = d.type === 'tv' ? 'Ex.: Samsung Crystal UHD / LG C3' : 'Ex.: Xiaomi Stick / iPhone 14';
+
+      setInstalled(installed, true);
+      setContent(content, true);
+      validateModal();
+    }
+
+    function setInstalled(value, quiet=false){
+      installed = value;
+      document.querySelector('#installedYes').classList.toggle('active', installed==='sim');
+      document.querySelector('#installedNo').classList.toggle('active', installed==='nao');
+      if(!quiet) validateModal();
+    }
+
+    function setContent(value, quiet=false){
+      content = value;
+      document.querySelector('#withoutAdult').classList.toggle('active', content==='sem');
+      document.querySelector('#withAdult').classList.toggle('active', content==='com');
+      document.querySelector('#adultConfirm').classList.toggle('show', content==='com');
+      if(!quiet) validateModal();
+    }
+
+    function validateModal(){
+      const adultReq = content === 'com' ? document.querySelector('#adultCheck').checked : true;
+      document.querySelector('#continueButton').disabled = !adultReq;
+    }
+
+    function continueWhatsApp(){
+      if(content === 'com' && !document.querySelector('#adultCheck').checked) return;
+      const model = document.querySelector('#model').value.trim() || 'Modelo não especificado';
+      const app = document.querySelector('#appPref').value;
+      const installStatus = installed === 'sim' ? 'App já instalado' : installed === 'nao' ? 'Preciso do tutorial de instalação' : 'Status de instalação pendente';
+      const prefAdult = content === 'com' ? 'Com canais +18 (Maioridade Confirmada)' : 'Sem canais +18';
+
+      let msg = '';
+      if(mode === 'teste'){
+        msg = `Olá! Gostaria de solicitar o *TESTE GRÁTIS VIP (4 Horas)*.\n\n` +
+              `📱 *Aparelho:* ${selectedDevice} (${model})\n` +
+              `⚙️ *App:* ${app}\n` +
+              `📥 *Status:* ${installStatus}\n` +
+              `🔞 *Conteúdo Adulto:* ${prefAdult}\n\n` +
+              `Poderiam gerar meus dados de acesso?`;
+      } else {
+        const finalPrice = selectedPlan.basePrice + selectedPlan.screenExtra[screens - 1];
+        msg = `Olá! Gostaria de assinar o *${selectedPlan.name.toUpperCase()}* (${screens} ${screens===1?'Tela':'Telas'} por R$ ${finalPrice}).\n\n` +
+              `📱 *Aparelho:* ${selectedDevice} (${model})\n` +
+              `⚙️ *App:* ${app}\n` +
+              `🔞 *Conteúdo Adulto:* ${prefAdult}\n\n` +
+              `Como procedo com o pagamento e ativação?`;
       }
-    } catch (err) {
-      console.error('Poll error:', err);
+
+      window.open(`https://wa.me/${whatsapp}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
+      closeAccess();
     }
-  }, 1000);
-}
 
-function stopPolling() {
-  if (pollTimer) {
-    clearInterval(pollTimer);
-    pollTimer = null;
-  }
-  isRunning = false;
-  updateUI();
-}
+    window.addEventListener('scroll', () => {
+      document.querySelector('#backTop').style.display = window.scrollY > 500 ? 'inline-block' : 'none';
+    });
 
-function handleReset() {
-  stopPolling();
-  jobId = null;
-  cloneState = { ...IDLE_STATE };
-  document.getElementById('token').value = '';
-  document.getElementById('sourceId').value = '';
-  document.getElementById('targetId').value = '';
-  updateUI();
-}
-
-// ===== UI RENDER =====
-function updateUI() {
-  const isDone = cloneState.status === 'success' || cloneState.status === 'error';
-  const running = isRunning || cloneState.status === 'running';
-
-  // Enable/disable inputs
-  document.getElementById('token').disabled = running;
-  document.getElementById('sourceId').disabled = running;
-  document.getElementById('targetId').disabled = running;
-
-  // Button
-  const btnContainer = document.getElementById('btnContainer');
-  if (!isDone) {
-    btnContainer.innerHTML = `
-      <button class="btn btn-primary" id="cloneBtn" ${running ? 'disabled' : ''}>
-        ${running ? `<div class="spinner" style="border-top-color:var(--primary-fg);margin-right:8px"></div> Clonando...` : `${ICONS.zap} Iniciar Clonagem`}
-      </button>
-    `;
-    const btn = document.getElementById('cloneBtn');
-    if (btn) btn.addEventListener('click', handleClone);
-  } else {
-    btnContainer.innerHTML = `<button class="btn btn-outline" id="resetBtn">Nova Clonagem</button>`;
-    const btn = document.getElementById('resetBtn');
-    if (btn) btn.addEventListener('click', handleReset);
-  }
-
-  // Progress card
-  const progressCard = document.getElementById('progressCard');
-  if (running || isDone) {
-    if (cloneState.steps && cloneState.steps.length > 0) {
-      progressCard.style.display = 'block';
-      renderProgress();
-    }
-  } else {
-    progressCard.style.display = 'none';
-  }
-}
-
-function renderProgress() {
-  // Title
-  const title = document.getElementById('progressTitle');
-  if (cloneState.status === 'success') title.textContent = 'Clonagem Concluída';
-  else if (cloneState.status === 'error') title.textContent = 'Erro na Clonagem';
-  else title.textContent = 'Progresso da Clonagem';
-
-  // Server name
-  document.getElementById('progressServer').textContent = cloneState.serverName
-    ? `Servidor: ${cloneState.serverName}`
-    : 'Processando...';
-
-  // Status badge
-  const badge = document.getElementById('statusBadge');
-  if (cloneState.status === 'running') {
-    badge.innerHTML = `<div class="status-badge running"><div class="status-dot running"></div><span>Ativo</span></div>`;
-  } else if (cloneState.status === 'success') {
-    badge.innerHTML = `<div class="status-badge success"><div class="status-dot success"></div><span>Sucesso</span></div>`;
-  } else if (cloneState.status === 'error') {
-    badge.innerHTML = `<div class="status-badge error"><div class="status-dot error"></div><span>Falha</span></div>`;
-  }
-
-  // Message
-  const msg = document.getElementById('progressMessage');
-  let icon = '';
-  if (cloneState.status === 'running') icon = `<div class="spinner"></div>`;
-  else if (cloneState.status === 'success') icon = `<span style="color:var(--green)">${ICONS.check}</span>`;
-  else if (cloneState.status === 'error') icon = `<span style="color:var(--destructive)">${ICONS.alert}</span>`;
-  msg.innerHTML = `${icon}<span>${cloneState.message}</span>`;
-
-  // Steps
-  const stepList = document.getElementById('stepList');
-  stepList.innerHTML = cloneState.steps.map((step, idx) => {
-    let iconHtml = '';
-    if (step.status === 'pending') iconHtml = '<div class="step-icon pending"></div>';
-    else if (step.status === 'running') iconHtml = `<div class="step-icon running">${ICONS.spinner}</div>`;
-    else if (step.status === 'done') iconHtml = `<div class="step-icon done">${ICONS.check}</div>`;
-    else if (step.status === 'error') iconHtml = `<div class="step-icon error">${ICONS.x}</div>`;
-
-    return `
-      <div class="step-item ${step.status}">
-        ${iconHtml}
-        <div style="flex:1;min-width:0">
-          <div class="step-label">${step.label}</div>
-          ${step.detail ? `<div class="step-detail">${step.detail}</div>` : ''}
-        </div>
-        <span class="step-num">${String(idx + 1).padStart(2, '0')}</span>
-      </div>
-    `;
-  }).join('');
-
-  // Alert box
-  const alertBox = document.getElementById('alertBox');
-  if (cloneState.status === 'error' && cloneState.error) {
-    alertBox.innerHTML = `
-      <div class="alert-box error">
-        ${ICONS.alert}
-        <div>
-          <div class="alert-title">Erro</div>
-          <div class="alert-msg">${cloneState.error}</div>
-        </div>
-      </div>
-    `;
-  } else if (cloneState.status === 'success') {
-    alertBox.innerHTML = `
-      <div class="alert-box success">
-        ${ICONS.check}
-        <div>
-          <div class="alert-title">Concluído</div>
-          <div class="alert-msg">Servidor clonado com sucesso! Todos os cargos, canais, categorias e emojis foram copiados.</div>
-        </div>
-      </div>
-    `;
-  } else {
-    alertBox.innerHTML = '';
-  }
-}
-
-// ===== INIT =====
-document.addEventListener('DOMContentLoaded', () => {
-  // Enable inputs
-  document.getElementById('token').disabled = false;
-  document.getElementById('sourceId').disabled = false;
-  document.getElementById('targetId').disabled = false;
-  document.getElementById('cloneBtn').disabled = false;
-
-  // Toggle token visibility
-  document.getElementById('toggleToken').addEventListener('click', () => {
-    showToken = !showToken;
-    const input = document.getElementById('token');
-    input.type = showToken ? 'text' : 'password';
-    document.getElementById('toggleToken').textContent = showToken ? 'Ocultar' : 'Mostrar';
-  });
-
-  // Clone button
-  document.getElementById('cloneBtn').addEventListener('click', handleClone);
-
-  // Save API URL to localStorage
-  const savedUrl = localStorage.getItem('deexter_api_url');
-  if (savedUrl) document.getElementById('apiUrl').value = savedUrl;
-  document.getElementById('apiUrl').addEventListener('change', (e) => {
-    localStorage.setItem('deexter_api_url', e.target.value);
-  });
-});
-</script>
+    // Inicialização
+    renderTabs();
+    renderCatalog();
+    renderPlatforms();
+    renderPlans();
+    setTimeout(triggerToast, 3000);
+  </script>
 </body>
 </html>
